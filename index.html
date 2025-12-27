@@ -122,20 +122,21 @@
 
             <form id="sankalp-form">
                 <input type="text" id="form-name" placeholder="Full Name" required>
+                <input type="email" id="form-email" placeholder="Email Address" required>
                 <div class="form-row-grid">
                     <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
-                    
-                    <select id="form-country" required>
-                        <option value="" disabled selected>Select Country</option>
-                        <option value="India">India</option>
-                        <option value="USA">USA</option>
-                        <option value="UAE">UAE</option>
-                        <option value="UK">UK</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="" disabled>──────────</option>
-                        </select>
+                </div>
+                <select id="form-country" required>
+                    <option value="" disabled selected>Select Country</option>
+                    <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UAE">UAE</option>
+                    <option value="UK">UK</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="" disabled>──────────</option>
+                </select>
                 </div>
                 
                 <label id="date-label" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Preferred Date</label>
@@ -275,6 +276,7 @@
             // 1. Gather data to send to your backend
             const params = new URLSearchParams();
             params.append('Name', document.getElementById('form-name').value);
+            params.append('Email', document.getElementById('form-email').value); 
             params.append('Gotra', document.getElementById('form-gotra').value || 'NA');
             params.append('Puja', selectedRitual.name);
             params.append('Date', document.getElementById('form-date').value);

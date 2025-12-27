@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arpanam | Vedic Rituals for the Modern World</title>
+    <title>Arpanam | Vedic Rituals</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --saffron: #D45D12; --cream: #FDFBF7; --gold: #C5A059; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--cream); color: #2D241E; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--cream); color: #2D241E; margin: 0; }
         h1, h2, h3 { font-family: 'Cinzel', serif; }
-        .saffron-btn { background: var(--saffron); color: white; transition: all 0.3s ease; }
+        .saffron-btn { background: var(--saffron); color: white; transition: all 0.3s ease; border: none; cursor: pointer; }
         .saffron-btn:hover { background: #b04b0d; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(212, 93, 18, 0.3); }
-        .ritual-card { transition: all 0.3s ease; border: 1px solid #E5D9C5; }
+        .ritual-card { transition: all 0.3s ease; border: 1px solid #E5D9C5; background: white; }
         .ritual-card:hover { border-color: var(--saffron); transform: translateY(-4px); }
     </style>
 </head>
@@ -22,9 +23,8 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
-        // STRATEGIC DATA: Rituals with Pricing and Intelligence
         const rituals = [
             { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "For family harmony and universal gratitude.", details: "The traditional narration and puja for Lord Vishnu, bringing peace to the household." },
             { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." },
@@ -34,7 +34,7 @@
             { id: 6, name: "Griha Pravesh", price: 15500, usd: 185, type: "STANDARD", desc: "Sanctify your new dwelling with Vastu Shanti.", details: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti." }
         ];
 
-        // Replace with your current Apps Script Web App URL
+        // !!! UPDATE THIS URL !!!
         const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
 
         function App() {
@@ -58,20 +58,18 @@
                 params.append('Notes', formData.notes);
 
                 try {
-                    const response = await fetch(SCRIPT_URL, { method: 'POST', body: params, mode: 'no-cors' });
-                    // Since no-cors, we can't read the response, so we wait and assume success/redirect
+                    await fetch(SCRIPT_URL, { method: 'POST', body: params, mode: 'no-cors' });
                     setTimeout(() => {
-                        window.location.href = "https://razorpay.me/@arpanam"; // Replace with your actual payment page if different
-                    }, 1500);
+                        window.location.href = "https://razorpay.me/@arpanam";
+                    }, 1000);
                 } catch (err) {
-                    alert("Submission error. Please contact us on WhatsApp.");
+                    alert("Submission error. Please try again.");
                     setStatus('IDLE');
                 }
             };
 
             return (
                 <div className="min-h-screen">
-                    {/* Header */}
                     <header className="p-8 text-center border-b border-[#E5D9C5]">
                         <h1 className="text-4xl tracking-widest text-[#D45D12] font-bold">ARPANAM</h1>
                         <p className="text-xs uppercase tracking-[0.3em] opacity-60 mt-2">Authentic Vedic Sankalp</p>
@@ -81,12 +79,12 @@
                         {view === 'LOBBY' && (
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 {rituals.map(r => (
-                                    <div key={r.id} className="ritual-card bg-white p-8 flex flex-col justify-between">
+                                    <div key={r.id} className="ritual-card p-8 flex flex-col justify-between">
                                         <div>
                                             <h3 className="text-2xl mb-3">{r.name}</h3>
                                             <p className="opacity-70 text-sm mb-6 leading-relaxed">{r.desc}</p>
                                         </div>
-                                        <div className="mt-4">
+                                        <div>
                                             <p className="text-lg font-semibold text-[#D45D12] mb-4">₹{r.price.toLocaleString()} <span className="text-sm font-normal opacity-50">/ ~${r.usd}</span></p>
                                             <button onClick={() => { setActiveRitual(r); setView('DETAIL'); }} className="w-full py-3 border border-[#D45D12] text-[#D45D12] hover:bg-[#D45D12] hover:text-white transition-all">VIEW DETAILS</button>
                                         </div>
@@ -95,7 +93,7 @@
                             </div>
                         )}
 
-                        {view === 'DETAIL' && (
+                        {view === 'DETAIL' && activeRitual && (
                             <div className="bg-white p-8 md:p-16 border border-[#E5D9C5] max-w-3xl mx-auto shadow-sm">
                                 <button onClick={() => setView('LOBBY')} className="mb-8 opacity-50 hover:opacity-100 text-sm">← BACK TO ALL RITUALS</button>
                                 <h2 className="text-4xl mb-4 font-bold">{activeRitual.name}</h2>
@@ -112,30 +110,23 @@
                             </div>
                         )}
 
-                        {view === 'FORM' && (
-                            <div className="bg-white p-8 md:p-16 border border-[#E5D9C5] max-w-2xl mx-auto">
+                        {view === 'FORM' && activeRitual && (
+                            <div className="bg-white p-8 md:p-12 border border-[#E5D9C5] max-w-2xl mx-auto shadow-sm">
                                 <button onClick={() => setView('DETAIL')} className="mb-8 opacity-50 text-sm">← BACK</button>
-                                <h2 className="text-3xl mb-4 font-bold">Registration & Intent</h2>
-                                
+                                <h2 className="text-3xl mb-4 font-bold">Sankalp Registration</h2>
                                 <div className="bg-[#FFF9F2] p-4 border-l-4 border-[#D45D12] mb-8 text-sm italic">
-                                    Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp after consulting the Panchang.
+                                    Preferred date is noted. Final <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp.
                                 </div>
-
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <input required placeholder="Full Name" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, name: e.target.value})} />
-                                    
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <input placeholder="Gotra (Lineage)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, gotra: e.target.value})} />
-                                        <input required placeholder="Country (e.g. USA)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, country: e.target.value})} />
+                                        <input placeholder="Gotra" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, gotra: e.target.value})} />
+                                        <input required placeholder="Country" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, country: e.target.value})} />
                                     </div>
-
-                                    {/* Smart Date Selection */}
-                                    <div className="space-y-3">
+                                    <div className="space-y-2">
                                         <label className="text-xs uppercase tracking-widest opacity-60">
-                                            {activeRitual.type === 'EMERGENCY' ? 'Timing Urgency' : 
-                                             activeRitual.type === 'PERIOD' ? 'Preferred Period' : 'Preferred Date'}
+                                            {activeRitual.type === 'EMERGENCY' ? 'Timing Urgency' : activeRitual.type === 'PERIOD' ? 'Preferred Period' : 'Preferred Date'}
                                         </label>
-
                                         {activeRitual.type === 'PERIOD' ? (
                                             <select required className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, date: e.target.value})}>
                                                 <option value="">Select Period</option>
@@ -147,7 +138,7 @@
                                             <select required className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, date: e.target.value})}>
                                                 <option value="ASAP">ASAP - Health Emergency</option>
                                                 <option value="Within 48 Hours">Within 48 Hours</option>
-                                                <option value="Specific Date">I have a specific date in mind</option>
+                                                <option value="Specific Date">Specific Date</option>
                                             </select>
                                         ) : (
                                             <input required type="date" min={new Date(Date.now() + 172800000).toISOString().split('T')[0]} 
@@ -155,22 +146,15 @@
                                                 onChange={e => setFormData({...formData, date: e.target.value})} />
                                         )}
                                     </div>
-
-                                    {/* Flexibility Toggle */}
-                                    <div className="flex items-center space-x-3 p-2 bg-[#FFF9F2]/50">
-                                        <input type="checkbox" id="flex" className="w-5 h-5 accent-[#D45D12]" 
-                                            onChange={e => setFormData({...formData, flexibility: e.target.checked ? 'Yes' : 'No'})} />
-                                        <label htmlFor="flex" className="text-sm opacity-80 cursor-pointer">I am flexible if a better Muhurat is available nearby.</label>
+                                    <div className="flex items-center space-x-3 p-3 bg-[#FFF9F2]/50">
+                                        <input type="checkbox" id="flex" className="w-5 h-5 accent-[#D45D12]" onChange={e => setFormData({...formData, flexibility: e.target.checked ? 'Yes' : 'No'})} />
+                                        <label htmlFor="flex" className="text-sm opacity-80 cursor-pointer">Flexible with date for better Muhurat.</label>
                                     </div>
-
-                                    <input required placeholder="WhatsApp Number (+1...)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, whatsapp: e.target.value})} />
-                                    
-                                    <textarea placeholder="Special Instructions or Health Details" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2] h-24" onChange={e => setFormData({...formData, notes: e.target.value})}></textarea>
-
+                                    <input required placeholder="WhatsApp Number" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, whatsapp: e.target.value})} />
+                                    <textarea placeholder="Special Instructions" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2] h-24" onChange={e => setFormData({...formData, notes: e.target.value})}></textarea>
                                     <button type="submit" disabled={status === 'SUBMITTING'} className="saffron-btn w-full py-5 font-bold text-lg">
-                                        {status === 'SUBMITTING' ? 'Connecting to Secure Payment...' : `Pay ₹${activeRitual.price.toLocaleString()} & Book via Razorpay`}
+                                        {status === 'SUBMITTING' ? 'Connecting...' : `Pay ₹${activeRitual.price.toLocaleString()} & Book via Razorpay`}
                                     </button>
-                                    <p className="text-[10px] text-center opacity-40 uppercase tracking-widest">Secure Payment powered by Razorpay</p>
                                 </form>
                             </div>
                         )}

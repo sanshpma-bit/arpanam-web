@@ -152,26 +152,49 @@
             btn.innerText = "Connecting to Sacred Payment...";
             btn.disabled = true;
 
-            const params = new URLSearchParams();
-            params.append('Name', document.getElementById('form-name').value);
-            params.append('Gotra', document.getElementById('form-gotra').value || 'NA');
-            params.append('Puja', selectedRitual.name);
-            params.append('Date', document.getElementById('form-date').value);
-            params.append('Country', document.getElementById('form-country').value);
-            params.append('WhatsApp', document.getElementById('form-whatsapp').value);
-            params.append('Flexibility', document.getElementById('form-flex').checked ? 'Yes' : 'No');
-            params.append('Notes', document.getElementById('form-notes').value || 'Standard');
-
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: params, mode: 'no-cors' });
-                setTimeout(() => {
-                    window.location.href = "https://razorpay.me/@arpanam";
-                }, 1000);
-            } catch (err) {
-                alert("Error connecting. Please try again.");
-                btn.disabled = false;
-                btn.innerText = "Pay & Book via Razorpay";
+            // Create a hidden iframe if it doesn't exist
+            let iframe = document.getElementById('hidden_iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'hidden_iframe';
+                iframe.name = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
             }
+
+            // This ensures that even if there's a CORS error, we still redirect to Razorpay
+            const redirectTimeout = setTimeout(() => {
+                window.location.href = "https://razorpay.me/@arpanam";
+            }, 2000);
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = SCRIPT_URL;
+            form.target = 'hidden_iframe'; // Submit to the hidden iframe
+
+            const fields = {
+                'Name': document.getElementById('form-name').value,
+                'Gotra': document.getElementById('form-gotra').value || 'NA',
+                'Puja': selectedRitual.name,
+                'Date': document.getElementById('form-date').value,
+                'Country': document.getElementById('form-country').value,
+                'WhatsApp': document.getElementById('form-whatsapp').value,
+                'Flexibility': document.getElementById('form-flex').checked ? 'Yes' : 'No',
+                'Notes': document.getElementById('form-notes').value || 'Standard'
+            };
+
+            for (const key in fields) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+
         };
 
         renderLobby();

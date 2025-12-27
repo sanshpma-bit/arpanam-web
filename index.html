@@ -34,9 +34,11 @@
             { id: 6, name: "Naamkaran", desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." }
         ];
 
-        function App() {
-            const [view, setView] = useState('LOBBY'); // LOBBY, DETAIL
+function App() {
+            const [view, setView] = useState('LOBBY'); 
             const [activeRitual, setActiveRitual] = useState(null);
+            const [formData, setFormData] = useState({ name: '', gotra: '', whatsapp: '', country: '' });
+            const [status, setStatus] = useState('IDLE'); // IDLE, SUBMITTING, SUCCESS
 
             const selectRitual = (r) => {
                 setActiveRitual(r);
@@ -44,19 +46,50 @@
                 window.scrollTo(0,0);
             };
 
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setStatus('SUBMITTING');
+                
+                // Your Apps Script URL
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec';
+                
+                const data = new FormData();
+                data.append('Name', formData.name);
+                data.append('Gotra', formData.gotra);
+                data.append('WhatsApp', formData.whatsapp);
+                data.append('Country', formData.country);
+                data.append('Puja', activeRitual.name);
+
+                try {
+                    await fetch(scriptURL, { method: 'POST', body: data, mode: 'no-cors' });
+                    setStatus('SUCCESS');
+                } catch (error) {
+                    alert("Something went wrong, please try again.");
+                    setStatus('IDLE');
+                }
+            };
+
+            if (status === 'SUCCESS') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center px-6 text-center">
+                        <div className="max-w-md">
+                            <h2 className="text-4xl mb-6 font-bold">🙏 Sankalp Recorded</h2>
+                            <p className="text-lg opacity-80 mb-8">Your request for {activeRitual.name} has been received. Please continue to WhatsApp to finalize the timing.</p>
+                            <a href={`https://wa.me/YOUR_PHONE_NUMBER?text=Hi, I just submitted a Sankalp for ${activeRitual.name}`} className="saffron-btn px-10 py-4 inline-block font-bold rounded-sm">Message on WhatsApp</a>
+                        </div>
+                    </div>
+                );
+            }
+
             return (
                 <div className="min-h-screen pb-20">
-                    {/* Hero Section */}
                     <section className="py-20 px-6 text-center">
                         <h1 className="text-5xl md:text-6xl font-bold mb-6">Arpanam</h1>
-                        <p className="text-xl opacity-80 italic max-w-2xl mx-auto leading-relaxed">
-                            Sacred rituals, thoughtfully arranged—wherever you are, your intention is honored.
-                        </p>
+                        <p className="text-xl opacity-80 italic max-w-2xl mx-auto leading-relaxed">Sacred rituals, thoughtfully arranged.</p>
                     </section>
 
-                    {/* Main Content */}
                     <main className="max-w-5xl mx-auto px-6">
-                        {view === 'LOBBY' ? (
+                        {view === 'LOBBY' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {rituals.map(r => (
                                     <div key={r.id} className="ritual-card p-10 bg-white/50 cursor-pointer" onClick={() => selectRitual(r)}>
@@ -66,12 +99,30 @@
                                     </div>
                                 ))}
                             </div>
-                        ) : (
+                        )}
+
+                        {view === 'DETAIL' && (
                             <div className="bg-white p-8 md:p-16 border border-[#E5D9C5]">
                                 <button onClick={() => setView('LOBBY')} className="mb-8 opacity-50 hover:opacity-100 text-sm">← BACK TO ALL RITUALS</button>
                                 <h2 className="text-4xl mb-6">{activeRitual.name}</h2>
                                 <p className="text-xl leading-relaxed opacity-90 mb-10">{activeRitual.details}</p>
-                                <button className="saffron-btn px-10 py-4 text-lg font-bold">Proceed with this Ritual</button>
+                                <button onClick={() => setView('FORM')} className="saffron-btn px-10 py-4 text-lg font-bold">Proceed with this Ritual</button>
+                            </div>
+                        )}
+
+                        {view === 'FORM' && (
+                            <div className="bg-white p-8 md:p-16 border border-[#E5D9C5] max-w-2xl mx-auto">
+                                <button onClick={() => setView('DETAIL')} className="mb-8 opacity-50 text-sm">← BACK</button>
+                                <h2 className="text-3xl mb-8 font-bold">Sankalp Details</h2>
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    <input required placeholder="Your Full Name" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, name: e.target.value})} />
+                                    <input placeholder="Gotra (Optional)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, gotra: e.target.value})} />
+                                    <input required placeholder="WhatsApp Number" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, whatsapp: e.target.value})} />
+                                    <input required placeholder="Country" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, country: e.target.value})} />
+                                    <button type="submit" disabled={status === 'SUBMITTING'} className="saffron-btn w-full py-4 font-bold">
+                                        {status === 'SUBMITTING' ? 'Processing...' : 'Submit Sankalp Request'}
+                                    </button>
+                                </form>
                             </div>
                         )}
                     </main>

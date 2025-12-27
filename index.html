@@ -28,25 +28,40 @@
         input, select, textarea { width: 100%; padding: 1rem; border: 1px solid #E5D9C5; background-color: #FFF9F2; margin-bottom: 1rem; border-radius: 4px; }
 
         /* Phone Input Specific Overrides */
+        /* Phone Input Professional Polishing */
         .iti { width: 100%; margin-bottom: 1rem; }
+
         .iti input { 
             padding-top: 1rem !important;
             padding-bottom: 1rem !important;
-            /* Increased from 52px to 95px to clear the flag and dial code */
-            padding-left: 95px !important; 
+            padding-left: 95px !important; /* Clears the +91 perfectly */
             background-color: #FFF9F2 !important;
             border: 1px solid #E5D9C5 !important;
+            border-radius: 4px !important;
         }
+
+        /* Removes the gray background behind the flag dropdown */
+        .iti__selected-flag {
+            background-color: transparent !important;
+            padding-left: 12px;
+        }
+
+        /* Styles the country list to match the Arpanam cream theme */
         .iti__country-list { 
-            background-color: #FDFBF7 !important; border: 1px solid #E5D9C5 !important; color: #2D241E !important; 
+            background-color: #FDFBF7 !important; 
+            border: 1px solid #E5D9C5 !important;
+            color: #2D241E !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
-    <header class="p-8 text-center border-b border-[#E5D9C5]">
-        <h1 class="text-4xl tracking-widest text-[#D45D12] font-bold">ARPANAM</h1>
-        <p class="text-xs uppercase tracking-[0.3em] opacity-60 mt-2">Authentic Vedic Sankalp</p>
+    <header class="p-8 text-center border-b border-[#E5D9C5] bg-white">
+        <a href="#" onclick="showLobby(); return false;" class="inline-block hover:opacity-80 transition-opacity no-underline">
+            <h1 class="text-4xl tracking-widest text-[#D45D12] font-bold">ARPANAM</h1>
+            <p class="text-xs uppercase tracking-[0.3em] opacity-60 mt-2">Authentic Vedic Sankalp</p>
+        </a>
     </header>
 
     <main class="max-w-6xl mx-auto p-6 md:py-16">

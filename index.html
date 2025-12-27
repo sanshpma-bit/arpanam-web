@@ -54,6 +54,7 @@ function App() {
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec';
                 
                 const data = new FormData();
+                // The first name in quotes must match what we put in your doPost function
                 data.append('Name', formData.name);
                 data.append('Gotra', formData.gotra);
                 data.append('WhatsApp', formData.whatsapp);

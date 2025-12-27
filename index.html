@@ -123,19 +123,19 @@
             <form id="sankalp-form">
                 <input type="text" id="form-name" placeholder="Full Name" required>
                 <div class="form-row-grid">
-                <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
-                    <input list="country-options" id="form-country" placeholder="Country" required>
-                    <datalist id="country-options">
-                        <option value="India">
-                        <option value="USA">
-                        <option value="UAE">
-                        <option value="UK">
-                        <option value="Canada">
-                        <option value="Australia">
-                        <option value="Singapore">
-                        <option value="Germany">
-                        <option value="Other Country">
-                    </datalist>
+                    <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
+                    
+                    <select id="form-country" required>
+                        <option value="" disabled selected>Select Country</option>
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="UAE">UAE</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="" disabled>──────────</option>
+                        </select>
                 </div>
                 
                 <label id="date-label" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Preferred Date</label>
@@ -158,15 +158,34 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
         let iti; 
-        window.addEventListener('DOMContentLoaded', () => {
+       window.addEventListener('DOMContentLoaded', () => {
+            // 1. Initialize WhatsApp Input
             const input = document.querySelector("#form-whatsapp");
             iti = window.intlTelInput(input, {
                 initialCountry: "in",
                 separateDialCode: true,
                 preferredCountries: ["in", "us", "ae", "gb"],
-                // This ensures the library uses the best possible formatting logic
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
             });
+
+            // 2. Populate Country Dropdown
+            const countrySelect = document.getElementById('form-country');
+            const otherCountries = [
+                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Chile", "China", "Colombia", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Dominican Republic", "Ecuador", "Egypt", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Georgia", "Germany", "Ghana", "Greece", "Hong Kong", "Hungary", "Iceland", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Latvia", "Lebanon", "Libya", "Lithuania", "Luxembourg", "Malaysia", "Maldives", "Malta", "Mauritius", "Mexico", "Monaco", "Morocco", "Myanmar", "Nepal", "Netherlands", "New Zealand", "Nigeria", "Norway", "Oman", "Pakistan", "Panama", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Serbia", "Slovakia", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "Ukraine", "Uzbekistan", "Vietnam", "Zambia", "Zimbabwe"
+            ];
+
+            otherCountries.forEach(country => {
+                const opt = document.createElement('option');
+                opt.value = country;
+                opt.textContent = country;
+                countrySelect.appendChild(opt);
+            });
+
+            // Add "Other" as the last option
+            const lastOpt = document.createElement('option');
+            lastOpt.value = "Other";
+            lastOpt.textContent = "Other Country";
+            countrySelect.appendChild(lastOpt);
         });
         const rituals = [
             { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu, bringing peace to the household." },

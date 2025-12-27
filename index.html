@@ -12,84 +12,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 
     <style>
-        /* Core Brand Colors & Fonts */
         :root { --saffron: #D45D12; --cream: #FDFBF7; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--cream); color: #2D241E; margin: 0; }
         h1, h2, h3 { font-family: 'Cinzel', serif; }
 
-        /* UI Components */
         .saffron-btn { background: var(--saffron); color: white; border: none; cursor: pointer; transition: 0.3s; padding: 1rem 2rem; font-weight: bold; width: 100%; border-radius: 4px; }
         .saffron-btn:hover { background: #b04b0d; transform: translateY(-2px); }
-        .ritual-card { transition: 0.3s; border: 1px solid #E5D9C5; background: white; cursor: pointer; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        
+        .ritual-card { transition: 0.3s; border: 1px solid #E5D9C5; background: white; cursor: pointer; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%; border-radius: 4px; }
         .ritual-card:hover { border-color: var(--saffron); transform: translateY(-4px); }
-        .hidden { display: none; }
-
-        /* General Form Inputs */
-        /* 1. Global Rhythm Reset */
-        input, select, textarea, .iti { 
-            width: 100%; 
+        
+        /* Input Normalization */
+        input:not([type="checkbox"]), select, textarea, .iti { 
+            width: 100% !important; 
             display: block;
             height: 52px; 
             padding: 0 1rem; 
-            border: 1px solid #E5D9C5; 
-            background-color: #FFF9F2; 
-            margin-bottom: 1.5rem !important; /* Uniform 24px vertical gap */
-            border-radius: 4px; 
+            border: 1px solid #E5D9C5 !important; 
+            background-color: #FFF9F2 !important; 
+            margin-bottom: 1.5rem !important; 
+            border-radius: 4px !important; 
             box-sizing: border-box;
             font-family: inherit;
         }
 
-        /* 2. Textarea adjustment (since it needs to be taller) */
-        textarea { height: auto !important; min-height: 100px; padding: 1rem !important; }
+        textarea { height: auto !important; min-height: 120px; padding: 1rem !important; }
 
-        /* 3. Phone Input Internal Fixes */
+        /* WhatsApp Alignment Fix - The "Single Box" look */
+        .iti { border: 1px solid #E5D9C5 !important; padding: 0 !important; overflow: hidden; }
         .iti input { 
-            margin-bottom: 0 !important; /* Internal input shouldn't push the container */
+            border: none !important; 
+            background: transparent !important; 
+            height: 100% !important; 
+            margin-bottom: 0 !important;
             padding-left: 95px !important; 
+            width: 100% !important;
+            box-shadow: none !important;
         }
         .iti__selected-flag { background-color: transparent !important; padding-left: 12px; }
-        .iti__country-list { 
-            background-color: #FDFBF7 !important; 
-            border: 1px solid #E5D9C5 !important; 
-            color: #2D241E !important; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-        }
+        .iti__country-list { background-color: #FDFBF7 !important; color: #2D241E !important; z-index: 100; border: 1px solid #E5D9C5 !important; }
 
-        /* 4. Grid Container Rhythm */
-        .form-row-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem; /* This ensures the vertical rhythm we discussed */
-        }
-        .form-row-grid input { margin-bottom: 0 !important; }
+        .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-row-grid input, .form-row-grid select { margin-bottom: 1.5rem !important; }
 
-        /* Phone Input Specific Overrides */
-        /* Phone Input Professional Polishing */
-        .iti { width: 100%; margin-bottom: 1rem; }
-
-        .iti input { 
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-            padding-left: 95px !important; /* Clears the +91 perfectly */
-            background-color: #FFF9F2 !important;
-            border: 1px solid #E5D9C5 !important;
-            border-radius: 4px !important;
-        }
-
-        /* Removes the gray background behind the flag dropdown */
-        .iti__selected-flag {
-            background-color: transparent !important;
-            padding-left: 12px;
-        }
-
-        /* Styles the country list to match the Arpanam cream theme */
-        .iti__country-list { 
-            background-color: #FDFBF7 !important; 
-            border: 1px solid #E5D9C5 !important;
-            color: #2D241E !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -117,39 +83,41 @@
             <h2 class="text-3xl mb-8">Sankalp Registration</h2>
             
             <div class="bg-[#FFF9F2] p-4 border-l-4 border-[#D45D12] mb-8 text-sm italic">
-                Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp after consulting the Panchang.
+                Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp.
             </div>
 
             <form id="sankalp-form">
                 <input type="text" id="form-name" placeholder="Full Name" required>
                 <input type="email" id="form-email" placeholder="Email Address" required>
+                
                 <div class="form-row-grid">
                     <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
-                </div>
-                <select id="form-country" required>
-                    <option value="" disabled selected>Select Country</option>
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
-                    <option value="UAE">UAE</option>
-                    <option value="UK">UK</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Singapore">Singapore</option>
-                    <option value="" disabled>──────────</option>
-                </select>
+                    <select id="form-country" required>
+                        <option value="" disabled selected>Select Country</option>
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="UAE">UAE</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="Other">Other Country</option>
+                    </select>
                 </div>
                 
                 <label id="date-label" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Preferred Date</label>
                 <div id="date-input-container"></div>
 
-                <div class="flex items-center space-x-3 p-3 bg-[#FFF9F2]/50 mb-6">
+                <div class="flex items-center space-x-3 p-4 bg-[#FFF9F2] border border-[#E5D9C5] mb-6 rounded">
                     <input type="checkbox" id="form-flex" class="w-5 h-5 accent-[#D45D12]">
                     <label for="form-flex" class="text-sm cursor-pointer">Flexible with date for better Muhurat.</label>
                 </div>
 
                 <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">WhatsApp Number</label>
                 <input type="tel" id="form-whatsapp" required>      
-                <textarea id="form-notes" placeholder="Special Instructions or Health Details"></textarea>
+                
+                <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Additional Details</label>
+                <textarea id="form-notes" placeholder="Any specific prayers or instructions?"></textarea>
 
                 <button type="submit" id="submit-btn" class="saffron-btn text-lg">Pay & Book via Razorpay</button>
             </form>
@@ -159,8 +127,20 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
         let iti; 
-       window.addEventListener('DOMContentLoaded', () => {
-            // 1. Initialize WhatsApp Input
+
+        // RITUAL DATA DEFINITION
+        const rituals = [
+            { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu.", note: "List family members to be mentioned in the Sankalp." },
+            { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Authentic Vedic naming ceremony.", note: "Provide Baby's Gender and Father's Name." },
+            { id: 3, name: "Mahamrityunjaya", price: 8500, usd: 105, type: "EMERGENCY", desc: "Intense jaap for health protection.", note: "Provide Full Name and Health Condition of the person." },
+            { id: 4, name: "Navagraha Shanti", price: 7500, usd: 90, type: "STANDARD", desc: "Targeted prayers for the nine planets.", note: "Mention specific life hurdles you're facing." },
+            { id: 5, name: "Pitru Dosh", price: 21000, usd: 250, type: "PERIOD", desc: "Rituals to provide peace to ancestors.", note: "Mention names of ancestors if known." },
+            { id: 6, name: "Griha Pravesh", price: 15500, usd: 185, type: "STANDARD", desc: "Complete home purification ritual.", note: "Provide the address of the new home." }
+        ];
+
+        let selectedRitual = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
             const input = document.querySelector("#form-whatsapp");
             iti = window.intlTelInput(input, {
                 initialCountry: "in",
@@ -168,37 +148,11 @@
                 preferredCountries: ["in", "us", "ae", "gb"],
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
             });
-
-            // 2. Populate Country Dropdown
-            const countrySelect = document.getElementById('form-country');
-            const otherCountries = [
-                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Chile", "China", "Colombia", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Dominican Republic", "Ecuador", "Egypt", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Georgia", "Germany", "Ghana", "Greece", "Hong Kong", "Hungary", "Iceland", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Latvia", "Lebanon", "Libya", "Lithuania", "Luxembourg", "Malaysia", "Maldives", "Malta", "Mauritius", "Mexico", "Monaco", "Morocco", "Myanmar", "Nepal", "Netherlands", "New Zealand", "Nigeria", "Norway", "Oman", "Pakistan", "Panama", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Serbia", "Slovakia", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "Ukraine", "Uzbekistan", "Vietnam", "Zambia", "Zimbabwe"
-            ];
-
-            otherCountries.forEach(country => {
-                const opt = document.createElement('option');
-                opt.value = country;
-                opt.textContent = country;
-                countrySelect.appendChild(opt);
-            });
-
-            // Add "Other" as the last option
-            const lastOpt = document.createElement('option');
-            lastOpt.value = "Other";
-            lastOpt.textContent = "Other Country";
-            countrySelect.appendChild(lastOpt);
+            renderLobby();
+            console.log("🛠️ Arpanam UI Loaded. Run runTests() to verify logic.");
         });
-        const rituals = [
-            { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu, bringing peace to the household." },
-            { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." },
-            { id: 3, name: "Mahamrityunjaya", price: 8500, usd: 105, type: "EMERGENCY", desc: "Intense jaap performed by Vedic priests for recovery and protection against health hurdles." },
-            { id: 4, name: "Navagraha Shanti", price: 7500, usd: 90, type: "STANDARD", desc: "Targeted prayers for the nine planets to smooth over career or health complications." },
-            { id: 5, name: "Pitru Dosh", price: 21000, usd: 250, type: "PERIOD", desc: "Rituals performed at sacred ghats to provide peace to the souls of ancestors." },
-            { id: 6, name: "Griha Pravesh", price: 15500, usd: 185, type: "STANDARD", desc: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti." }
-        ];
 
-        let selectedRitual = null;
-
+        // UI NAVIGATION LOGIC
         function renderLobby() {
             const lobby = document.getElementById('lobby-view');
             lobby.innerHTML = rituals.map(r => `
@@ -224,7 +178,6 @@
             document.getElementById('detail-title').innerText = selectedRitual.name;
             document.getElementById('detail-price').innerText = `Dakshina: ₹${selectedRitual.price.toLocaleString()} (~$${selectedRitual.usd})`;
             document.getElementById('detail-desc').innerText = selectedRitual.desc;
-            
             document.getElementById('lobby-view').classList.add('hidden');
             document.getElementById('detail-view').classList.remove('hidden');
             document.getElementById('form-view').classList.add('hidden');
@@ -233,27 +186,18 @@
         function showForm() {
             const dateLabel = document.getElementById('date-label');
             const container = document.getElementById('date-input-container');
+            const notesField = document.getElementById('form-notes');
             const submitBtn = document.getElementById('submit-btn');
 
             submitBtn.innerText = `Pay ₹${selectedRitual.price.toLocaleString()} & Book via Razorpay`;
+            notesField.placeholder = selectedRitual.note || "Any specific prayers or instructions?";
 
             if (selectedRitual.type === 'PERIOD') {
                 dateLabel.innerText = "Preferred Period";
-                container.innerHTML = `
-                    <select id="form-date" required>
-                        <option value="">Select Period</option>
-                        <option value="Pitru Paksha">Upcoming Pitru Paksha</option>
-                        <option value="Amavasya Tithi">Amavasya (Monthly)</option>
-                        <option value="Annual Tithi">Annual Tithi (Varshik)</option>
-                    </select>`;
+                container.innerHTML = `<select id="form-date" required><option value="Pitru Paksha">Upcoming Pitru Paksha</option><option value="Amavasya">Amavasya (Monthly)</option><option value="Annual Tithi">Annual Tithi (Varshik)</option></select>`;
             } else if (selectedRitual.type === 'EMERGENCY') {
                 dateLabel.innerText = "Timing Urgency";
-                container.innerHTML = `
-                    <select id="form-date" required>
-                        <option value="ASAP">ASAP - Health Emergency</option>
-                        <option value="Within 48 Hours">Within 48 Hours</option>
-                        <option value="Specific Date">Specific Date</option>
-                    </select>`;
+                container.innerHTML = `<select id="form-date" required><option value="ASAP">ASAP - Health Emergency</option><option value="48 Hours">Within 48 Hours</option></select>`;
             } else {
                 dateLabel.innerText = "Preferred Date";
                 const minDate = new Date(Date.now() + 172800000).toISOString().split('T')[0];
@@ -264,16 +208,14 @@
             document.getElementById('form-view').classList.remove('hidden');
         }
 
+        // SUBMISSION LOGIC
         document.getElementById('sankalp-form').onsubmit = async (e) => {
             e.preventDefault();
-            
             const btn = document.getElementById('submit-btn');
             const originalText = btn.innerText;
-            
             btn.innerText = "Generating Secure Payment Link...";
             btn.disabled = true;
 
-            // 1. Gather data to send to your backend
             const params = new URLSearchParams();
             params.append('Name', document.getElementById('form-name').value);
             params.append('Email', document.getElementById('form-email').value); 
@@ -281,50 +223,46 @@
             params.append('Puja', selectedRitual.name);
             params.append('Date', document.getElementById('form-date').value);
             params.append('Country', document.getElementById('form-country').value);
-
-            // --- UPDATED WHATSAPP VALIDATION START ---
-            // This checks if the number is valid. 
-            // If the library is still loading, it falls back to a simple length check (>8 digits)
-            const isValid = (typeof iti.isValidNumber === 'function') ? iti.isValidNumber() : document.getElementById('form-whatsapp').value.length > 8;
-
-            if (!isValid) {
-                alert("Please enter a valid WhatsApp number (e.g., 10 digits for India/USA) without the country code.");
-                btn.disabled = false;
-                btn.innerText = originalText;
-                return;
-            }
-
-            // Get the full number (e.g., +12025550123)
-            const fullWhatsApp = iti.getNumber();
-            params.append('WhatsApp', fullWhatsApp);
-            // --- UPDATED WHATSAPP VALIDATION END ---
-
+            params.append('WhatsApp', iti.getNumber());
             params.append('Flexibility', document.getElementById('form-flex').checked ? 'Yes' : 'No');
             params.append('Notes', document.getElementById('form-notes').value || 'Standard');
 
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: params
-                });
-
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: params });
                 const result = await response.json();
-
                 if (result.status === "success" && result.paymentLink) {
-                    btn.innerText = "Redirecting to Razorpay...";
                     window.location.href = result.paymentLink;
-                } else {
-                    throw new Error("Backend failed to return a link");
-                }
-
+                } else { throw new Error(); }
             } catch (err) {
-                console.error("Connection Error:", err);
-                alert("Sankalp Recorded! Redirecting you to our secure general payment gateway...");
+                alert("Redirecting to backup payment gateway...");
                 window.location.href = "https://rzp.io/rzp/gjeW62Wi";
             }
-};
+        };
 
-        renderLobby();
+        // --- TEST SUITE (Unit Testing for UI Logic) ---
+        function runTests() {
+            console.group("🚀 Arpanam UI Test Suite");
+            
+            // Test 1: Ritual Data Integrity
+            const pujaNames = rituals.map(r => r.name);
+            console.log(pujaNames.length === 6 ? "✅ Puja Count Correct" : "❌ Puja Count Mismatch");
+
+            // Test 2: Dynamic Placeholder Verification
+            selectRitual(2); // Naamkaran
+            showForm();
+            const placeholder = document.getElementById('form-notes').placeholder;
+            console.log(placeholder.includes("Baby") ? "✅ Dynamic Placeholder Passed" : "❌ Placeholder Failed");
+
+            // Test 3: WhatsApp Library Visibility
+            console.log(typeof iti.getNumber === 'function' ? "✅ WhatsApp Library Ready" : "❌ WhatsApp Library Error");
+
+            // Test 4: Container Hiding Logic
+            showLobby();
+            const formHidden = document.getElementById('form-view').classList.contains('hidden');
+            console.log(formHidden ? "✅ Navigation Visibility Passed" : "❌ Navigation Leak Detected");
+
+            console.groupEnd();
+        }
     </script>
 </body>
 </html>

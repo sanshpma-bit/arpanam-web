@@ -26,12 +26,12 @@
         const { useState } = React;
 
         const rituals = [
-            { id: 1, name: "Griha Pravesh", desc: "Sanctify your new dwelling with Vastu Shanti.", details: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti to ensure peace and prosperity." },
-            { id: 2, name: "Satyanarayan Katha", desc: "For family harmony and universal gratitude.", details: "The traditional 5-chapter narration and puja for Lord Vishnu, bringing peace to the household." },
-            { id: 3, name: "Mahamrityunjaya", desc: "A powerful Vedic shield for health.", details: "Intense jaap performed by Vedic priests for recovery and protection against health hurdles." },
-            { id: 4, name: "Pitru Dosh", desc: "Honoring ancestors at the banks of Ganga.", details: "Rituals performed at sacred ghats to provide peace to the souls of ancestors." },
-            { id: 5, name: "Navagraha Shanti", desc: "Align energies to overcome life hurdles.", details: "Targeted prayers for the nine planets to smooth over career or health complications." },
-            { id: 6, name: "Naamkaran", desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." }
+            { id: 1, name: "Griha Pravesh", price: 5100, desc: "Sanctify your new dwelling with Vastu Shanti.", details: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti to ensure peace and prosperity." },
+            { id: 2, name: "Satyanarayan Katha", price: 1100, desc: "For family harmony and universal gratitude.", details: "The traditional 5-chapter narration and puja for Lord Vishnu, bringing peace to the household." },
+            { id: 3, name: "Mahamrityunjaya", price: 2100, desc: "A powerful Vedic shield for health.", details: "Intense jaap performed by Vedic priests for recovery and protection against health hurdles." },
+            { id: 4, name: "Pitru Dosh", price: 3100, desc: "Honoring ancestors at the banks of Ganga.", details: "Rituals performed at sacred ghats to provide peace to the souls of ancestors." },
+            { id: 5, name: "Navagraha Shanti", price: 2500, desc: "Align energies to overcome life hurdles.", details: "Targeted prayers for the nine planets to smooth over career or health complications." },
+            { id: 6, name: "Naamkaran", price: 2100, desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." }
         ];
 
 function App() {
@@ -119,6 +119,7 @@ function App() {
                             <div className="bg-white p-8 md:p-16 border border-[#E5D9C5]">
                                 <button onClick={() => setView('LOBBY')} className="mb-8 opacity-50 hover:opacity-100 text-sm">← BACK TO ALL RITUALS</button>
                                 <h2 className="text-4xl mb-6">{activeRitual.name}</h2>
+                                <p className="text-2xl font-bold text-[#D45D12] mb-6">Dakshina: ₹{activeRitual.price}</p> 
                                 <p className="text-xl leading-relaxed opacity-90 mb-10">{activeRitual.details}</p>
                                 <button onClick={() => setView('FORM')} className="saffron-btn px-10 py-4 text-lg font-bold">Proceed with this Ritual</button>
                             </div>
@@ -134,7 +135,7 @@ function App() {
                                     <input required placeholder="WhatsApp Number" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, whatsapp: e.target.value})} />
                                     <input required placeholder="Country" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, country: e.target.value})} />
                                     <button type="submit" disabled={status === 'SUBMITTING'} className="saffron-btn w-full py-4 font-bold">
-                                        {status === 'SUBMITTING' ? 'Processing...' : 'Submit Sankalp Request'}
+                                        {status === 'SUBMITTING' ? 'Connecting to Secure Payment...' : `Pay ₹${activeRitual.price} & Book via Razorpay`}
                                     </button>
                                 </form>
                             </div>

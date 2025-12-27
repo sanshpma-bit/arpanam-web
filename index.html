@@ -94,13 +94,14 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
-        let iti; // This variable will store the phone selector instance
+        let iti; 
         window.addEventListener('DOMContentLoaded', () => {
             const input = document.querySelector("#form-whatsapp");
             iti = window.intlTelInput(input, {
                 initialCountry: "in",
                 separateDialCode: true,
                 preferredCountries: ["in", "us", "ae", "gb"],
+                // This ensures the library uses the best possible formatting logic
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
             });
         });
@@ -196,25 +197,28 @@
             params.append('Puja', selectedRitual.name);
             params.append('Date', document.getElementById('form-date').value);
             params.append('Country', document.getElementById('form-country').value);
-            // 1. Validate the phone number first
-            if (!iti.isValidNumber()) {
-                alert("Please enter a valid WhatsApp number for the selected country.");
+
+            // --- UPDATED WHATSAPP VALIDATION START ---
+            // This checks if the number is valid. 
+            // If the library is still loading, it falls back to a simple length check (>8 digits)
+            const isValid = (typeof iti.isValidNumber === 'function') ? iti.isValidNumber() : document.getElementById('form-whatsapp').value.length > 8;
+
+            if (!isValid) {
+                alert("Please enter a valid WhatsApp number (e.g., 10 digits for India/USA) without the country code.");
                 btn.disabled = false;
                 btn.innerText = originalText;
                 return;
             }
 
-            // 2. Get the full international number (e.g., +919876543210)
+            // Get the full number (e.g., +12025550123)
             const fullWhatsApp = iti.getNumber();
             params.append('WhatsApp', fullWhatsApp);
+            // --- UPDATED WHATSAPP VALIDATION END ---
+
             params.append('Flexibility', document.getElementById('form-flex').checked ? 'Yes' : 'No');
             params.append('Notes', document.getElementById('form-notes').value || 'Standard');
 
             try {
-                /** * 2. CALL THE BACKEND
-                 * We remove 'no-cors' because we need to READ the response (the Link) 
-                 * that your script generates.
-                 */
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     body: params
@@ -223,7 +227,6 @@
                 const result = await response.json();
 
                 if (result.status === "success" && result.paymentLink) {
-                    // 3. SUCCESS: Redirect to the UNIQUE link the backend just made
                     btn.innerText = "Redirecting to Razorpay...";
                     window.location.href = result.paymentLink;
                 } else {
@@ -232,9 +235,8 @@
 
             } catch (err) {
                 console.error("Connection Error:", err);
-                // Better UX: Show message AND redirect to general payment so you don't lose the sale
                 alert("Sankalp Recorded! Redirecting you to our secure general payment gateway...");
-                window.location.href = "https://rzp.io/rzp/gjeW62Wi"; // Your general fallback link
+                window.location.href = "https://rzp.io/rzp/gjeW62Wi";
             }
 };
 

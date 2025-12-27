@@ -17,6 +17,13 @@
         .hidden { display: none; }
         input, select, textarea { width: 100%; padding: 1rem; border: 1px solid #E5D9C5; background-color: #FFF9F2; margin-bottom: 1rem; border-radius: 4px; }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+<style>
+    /* Ensure the dropdown fits the Arpanam style */
+    .iti { width: 100%; margin-bottom: 1rem; }
+    .iti__country-list { background-color: var(--cream); border: 1px solid #E5D9C5; }
+</style>
 </head>
 <body>
 
@@ -59,7 +66,8 @@
                     <label for="form-flex" class="text-sm cursor-pointer">Flexible with date for better Muhurat.</label>
                 </div>
 
-                <input type="text" id="form-whatsapp" placeholder="WhatsApp Number (+1...)" required>
+                <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">WhatsApp Number</label>
+                <input type="tel" id="form-whatsapp" required>      
                 <textarea id="form-notes" placeholder="Special Instructions or Health Details"></textarea>
 
                 <button type="submit" id="submit-btn" class="saffron-btn text-lg">Pay & Book via Razorpay</button>
@@ -68,7 +76,7 @@
     </main>
 
     <script>
-        const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
         
         const rituals = [
             { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu, bringing peace to the household." },
@@ -188,10 +196,9 @@
 
             } catch (err) {
                 console.error("Connection Error:", err);
-                // Fallback: If the automated link fails, alert the user and we contact them manually
-                alert("Sankalp Recorded! Our Acharya will WhatsApp your personal payment link shortly due to high traffic.");
-                btn.innerText = originalText;
-                btn.disabled = false;
+                // Better UX: Show message AND redirect to general payment so you don't lose the sale
+                alert("Sankalp Recorded! Redirecting you to our secure general payment gateway...");
+                window.location.href = "https://rzp.io/rzp/gjeW62Wi"; // Your general fallback link
             }
 };
 

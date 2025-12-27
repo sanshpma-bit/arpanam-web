@@ -3,140 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arpanam | Sacred Rituals</title>
+    <title>Arpanam | Vedic Rituals for the Modern World</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #FFF9F2; color: #2D1E1B; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
-        .ritual-card { transition: all 0.3s ease; border: 0.5px solid #E5D9C5; }
-        .ritual-card:hover { border-color: #D45D12; background-color: white; }
-        .saffron-btn { background-color: #D45D12; color: white; transition: all 0.3s; }
-        .saffron-btn:hover { background-color: #B04A0D; }
+        :root { --saffron: #D45D12; --cream: #FDFBF7; --gold: #C5A059; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--cream); color: #2D241E; }
+        h1, h2, h3 { font-family: 'Cinzel', serif; }
+        .saffron-btn { background: var(--saffron); color: white; transition: all 0.3s ease; }
+        .saffron-btn:hover { background: #b04b0d; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(212, 93, 18, 0.3); }
+        .ritual-card { transition: all 0.3s ease; border: 1px solid #E5D9C5; }
+        .ritual-card:hover { border-color: var(--saffron); transform: translateY(-4px); }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
+        // STRATEGIC DATA: Rituals with Pricing and Intelligence
         const rituals = [
-            { id: 1, name: "Griha Pravesh", price: 5100, desc: "Sanctify your new dwelling with Vastu Shanti.", details: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti to ensure peace and prosperity." },
-            { id: 2, name: "Satyanarayan Katha", price: 1100, desc: "For family harmony and universal gratitude.", details: "The traditional 5-chapter narration and puja for Lord Vishnu, bringing peace to the household." },
-            { id: 3, name: "Mahamrityunjaya", price: 2100, desc: "A powerful Vedic shield for health.", details: "Intense jaap performed by Vedic priests for recovery and protection against health hurdles." },
-            { id: 4, name: "Pitru Dosh", price: 3100, desc: "Honoring ancestors at the banks of Ganga.", details: "Rituals performed at sacred ghats to provide peace to the souls of ancestors." },
-            { id: 5, name: "Navagraha Shanti", price: 2500, desc: "Align energies to overcome life hurdles.", details: "Targeted prayers for the nine planets to smooth over career or health complications." },
-            { id: 6, name: "Naamkaran", price: 2100, desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." }
+            { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "For family harmony and universal gratitude.", details: "The traditional narration and puja for Lord Vishnu, bringing peace to the household." },
+            { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." },
+            { id: 3, name: "Mahamrityunjaya", price: 8500, usd: 105, type: "EMERGENCY", desc: "A powerful Vedic shield for health.", details: "Intense jaap performed by Vedic priests for recovery and protection against health hurdles." },
+            { id: 4, name: "Navagraha Shanti", price: 7500, usd: 90, type: "STANDARD", desc: "Align energies to overcome life hurdles.", details: "Targeted prayers for the nine planets to smooth over career or health complications." },
+            { id: 5, name: "Pitru Dosh", price: 21000, usd: 250, type: "PERIOD", desc: "Honoring ancestors at the banks of Ganga.", details: "Rituals performed at sacred ghats to provide peace to the souls of ancestors." },
+            { id: 6, name: "Griha Pravesh", price: 15500, usd: 185, type: "STANDARD", desc: "Sanctify your new dwelling with Vastu Shanti.", details: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti." }
         ];
 
-function App() {
-            const [view, setView] = useState('LOBBY'); 
-            const [activeRitual, setActiveRitual] = useState(null);
-            const [formData, setFormData] = useState({ name: '', gotra: '', whatsapp: '', country: '' });
-            const [status, setStatus] = useState('IDLE'); // IDLE, SUBMITTING, SUCCESS
+        // Replace with your current Apps Script Web App URL
+        const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
 
-            const selectRitual = (r) => {
-                setActiveRitual(r);
-                setView('DETAIL');
-                window.scrollTo(0,0);
-            };
+        function App() {
+            const [view, setView] = useState('LOBBY');
+            const [activeRitual, setActiveRitual] = useState(null);
+            const [formData, setFormData] = useState({ name: '', gotra: '', whatsapp: '', country: '', date: '', flexibility: 'No', notes: '' });
+            const [status, setStatus] = useState('IDLE');
 
             const handleSubmit = async (e) => {
                 e.preventDefault();
                 setStatus('SUBMITTING');
-                
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec';
-                
-                // We use URLSearchParams for better compatibility with Google Apps Script 'e.parameter'
+
                 const params = new URLSearchParams();
                 params.append('Name', formData.name);
                 params.append('Gotra', formData.gotra);
+                params.append('Puja', activeRitual.name);
                 params.append('WhatsApp', formData.whatsapp);
                 params.append('Country', formData.country);
-                params.append('Puja', activeRitual.name);
+                params.append('Date', formData.date);
+                params.append('Flexibility', formData.flexibility);
+                params.append('Notes', formData.notes);
 
                 try {
-                    // Note: We removed 'no-cors' so we can actually read the 'paymentLink' coming back
-                    const response = await fetch(scriptURL + "?" + params.toString(), { 
-                        method: 'POST'
-                    });
-                    
-                    const result = await response.json();
-
-                    if (result.status === 'success' && result.paymentLink) {
-                        // Redirect user directly to Razorpay
-                        window.location.href = result.paymentLink;
-                    } else {
-                        // Fallback to success message if no link is found
-                        setStatus('SUCCESS');
-                    }
-                } catch (error) {
-                    // Even if there's a CORS error, the data usually reaches the sheet. 
-                    // We show the success screen as a fallback.
-                    console.error("Submission error:", error);
-                    setStatus('SUCCESS');
+                    const response = await fetch(SCRIPT_URL, { method: 'POST', body: params, mode: 'no-cors' });
+                    // Since no-cors, we can't read the response, so we wait and assume success/redirect
+                    setTimeout(() => {
+                        window.location.href = "https://razorpay.me/@arpanam"; // Replace with your actual payment page if different
+                    }, 1500);
+                } catch (err) {
+                    alert("Submission error. Please contact us on WhatsApp.");
+                    setStatus('IDLE');
                 }
             };
 
-            if (status === 'SUCCESS') {
-                return (
-                    <div className="min-h-screen flex items-center justify-center px-6 text-center">
-                        <div className="max-w-md">
-                            <h2 className="text-4xl mb-6 font-bold">🙏 Sankalp Recorded</h2>
-                            <p className="text-lg opacity-80 mb-8">Your request for {activeRitual.name} has been received. Please continue to WhatsApp to finalize the timing.</p>
-                            <a href={`https://wa.me/YOUR_PHONE_NUMBER?text=Hi, I just submitted a Sankalp for ${activeRitual.name}`} className="saffron-btn px-10 py-4 inline-block font-bold rounded-sm">Message on WhatsApp</a>
-                        </div>
-                    </div>
-                );
-            }
-
             return (
-                <div className="min-h-screen pb-20">
-                    <section className="py-20 px-6 text-center">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-6">Arpanam</h1>
-                        <p className="text-xl opacity-80 italic max-w-2xl mx-auto leading-relaxed">Sacred rituals, thoughtfully arranged.</p>
-                    </section>
+                <div className="min-h-screen">
+                    {/* Header */}
+                    <header className="p-8 text-center border-b border-[#E5D9C5]">
+                        <h1 className="text-4xl tracking-widest text-[#D45D12] font-bold">ARPANAM</h1>
+                        <p className="text-xs uppercase tracking-[0.3em] opacity-60 mt-2">Authentic Vedic Sankalp</p>
+                    </header>
 
-                    <main className="max-w-5xl mx-auto px-6">
+                    <main className="max-w-6xl mx-auto p-6 md:py-16">
                         {view === 'LOBBY' && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 {rituals.map(r => (
-                                    <div key={r.id} className="ritual-card p-10 bg-white/50 cursor-pointer" onClick={() => selectRitual(r)}>
-                                        <h3 className="text-2xl mb-3">{r.name}</h3>
-                                        <p className="opacity-70 mb-6">{r.desc}</p>
-                                        <span className="text-xs uppercase tracking-widest text-[#D45D12] font-bold">Understand This Ritual →</span>
+                                    <div key={r.id} className="ritual-card bg-white p-8 flex flex-col justify-between">
+                                        <div>
+                                            <h3 className="text-2xl mb-3">{r.name}</h3>
+                                            <p className="opacity-70 text-sm mb-6 leading-relaxed">{r.desc}</p>
+                                        </div>
+                                        <div className="mt-4">
+                                            <p className="text-lg font-semibold text-[#D45D12] mb-4">₹{r.price.toLocaleString()} <span className="text-sm font-normal opacity-50">/ ~${r.usd}</span></p>
+                                            <button onClick={() => { setActiveRitual(r); setView('DETAIL'); }} className="w-full py-3 border border-[#D45D12] text-[#D45D12] hover:bg-[#D45D12] hover:text-white transition-all">VIEW DETAILS</button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         )}
 
                         {view === 'DETAIL' && (
-                            <div className="bg-white p-8 md:p-16 border border-[#E5D9C5]">
+                            <div className="bg-white p-8 md:p-16 border border-[#E5D9C5] max-w-3xl mx-auto shadow-sm">
                                 <button onClick={() => setView('LOBBY')} className="mb-8 opacity-50 hover:opacity-100 text-sm">← BACK TO ALL RITUALS</button>
-                                <h2 className="text-4xl mb-6">{activeRitual.name}</h2>
-                                <p className="text-2xl font-bold text-[#D45D12] mb-6">Dakshina: ₹{activeRitual.price}</p> 
-                                <p className="text-xl leading-relaxed opacity-90 mb-10">{activeRitual.details}</p>
-                                <button onClick={() => setView('FORM')} className="saffron-btn px-10 py-4 text-lg font-bold">Proceed with this Ritual</button>
+                                <h2 className="text-4xl mb-4 font-bold">{activeRitual.name}</h2>
+                                <p className="text-2xl text-[#D45D12] font-bold mb-8">Dakshina: ₹{activeRitual.price.toLocaleString()} <span className="text-base font-normal opacity-50 italic"> (~${activeRitual.usd} USD)</span></p>
+                                <div className="space-y-6 text-lg leading-relaxed opacity-90 mb-10 border-t border-b border-[#F0E6D6] py-8">
+                                    <p>{activeRitual.details}</p>
+                                    <ul className="text-sm space-y-2 opacity-75">
+                                        <li>• All-inclusive Vedic Samagri provided</li>
+                                        <li>• Coordination by Acharya via WhatsApp</li>
+                                        <li>• Digital Sankalp/Video evidence included</li>
+                                    </ul>
+                                </div>
+                                <button onClick={() => setView('FORM')} className="saffron-btn px-12 py-5 text-xl font-bold w-full md:w-auto">Start Sankalp Process</button>
                             </div>
                         )}
 
                         {view === 'FORM' && (
                             <div className="bg-white p-8 md:p-16 border border-[#E5D9C5] max-w-2xl mx-auto">
                                 <button onClick={() => setView('DETAIL')} className="mb-8 opacity-50 text-sm">← BACK</button>
-                                <h2 className="text-3xl mb-8 font-bold">Sankalp Details</h2>
+                                <h2 className="text-3xl mb-4 font-bold">Registration & Intent</h2>
+                                
+                                <div className="bg-[#FFF9F2] p-4 border-l-4 border-[#D45D12] mb-8 text-sm italic">
+                                    Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp after consulting the Panchang.
+                                </div>
+
                                 <form onSubmit={handleSubmit} className="space-y-6">
-                                    <input required placeholder="Your Full Name" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, name: e.target.value})} />
-                                    <input placeholder="Gotra (Optional)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, gotra: e.target.value})} />
-                                    <input required placeholder="WhatsApp Number" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, whatsapp: e.target.value})} />
-                                    <input required placeholder="Country" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, country: e.target.value})} />
-                                    <button type="submit" disabled={status === 'SUBMITTING'} className="saffron-btn w-full py-4 font-bold">
-                                        {status === 'SUBMITTING' ? 'Connecting to Secure Payment...' : `Pay ₹${activeRitual.price} & Book via Razorpay`}
+                                    <input required placeholder="Full Name" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, name: e.target.value})} />
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <input placeholder="Gotra (Lineage)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, gotra: e.target.value})} />
+                                        <input required placeholder="Country (e.g. USA)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, country: e.target.value})} />
+                                    </div>
+
+                                    {/* Smart Date Selection */}
+                                    <div className="space-y-3">
+                                        <label className="text-xs uppercase tracking-widest opacity-60">
+                                            {activeRitual.type === 'EMERGENCY' ? 'Timing Urgency' : 
+                                             activeRitual.type === 'PERIOD' ? 'Preferred Period' : 'Preferred Date'}
+                                        </label>
+
+                                        {activeRitual.type === 'PERIOD' ? (
+                                            <select required className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, date: e.target.value})}>
+                                                <option value="">Select Period</option>
+                                                <option value="Pitru Paksha">Upcoming Pitru Paksha</option>
+                                                <option value="Amavasya Tithi">Amavasya (Monthly)</option>
+                                                <option value="Annual Tithi">Annual Tithi (Varshik)</option>
+                                            </select>
+                                        ) : activeRitual.type === 'EMERGENCY' ? (
+                                            <select required className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, date: e.target.value})}>
+                                                <option value="ASAP">ASAP - Health Emergency</option>
+                                                <option value="Within 48 Hours">Within 48 Hours</option>
+                                                <option value="Specific Date">I have a specific date in mind</option>
+                                            </select>
+                                        ) : (
+                                            <input required type="date" min={new Date(Date.now() + 172800000).toISOString().split('T')[0]} 
+                                                className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" 
+                                                onChange={e => setFormData({...formData, date: e.target.value})} />
+                                        )}
+                                    </div>
+
+                                    {/* Flexibility Toggle */}
+                                    <div className="flex items-center space-x-3 p-2 bg-[#FFF9F2]/50">
+                                        <input type="checkbox" id="flex" className="w-5 h-5 accent-[#D45D12]" 
+                                            onChange={e => setFormData({...formData, flexibility: e.target.checked ? 'Yes' : 'No'})} />
+                                        <label htmlFor="flex" className="text-sm opacity-80 cursor-pointer">I am flexible if a better Muhurat is available nearby.</label>
+                                    </div>
+
+                                    <input required placeholder="WhatsApp Number (+1...)" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2]" onChange={e => setFormData({...formData, whatsapp: e.target.value})} />
+                                    
+                                    <textarea placeholder="Special Instructions or Health Details" className="w-full p-4 border border-[#E5D9C5] bg-[#FFF9F2] h-24" onChange={e => setFormData({...formData, notes: e.target.value})}></textarea>
+
+                                    <button type="submit" disabled={status === 'SUBMITTING'} className="saffron-btn w-full py-5 font-bold text-lg">
+                                        {status === 'SUBMITTING' ? 'Connecting to Secure Payment...' : `Pay ₹${activeRitual.price.toLocaleString()} & Book via Razorpay`}
                                     </button>
+                                    <p className="text-[10px] text-center opacity-40 uppercase tracking-widest">Secure Payment powered by Razorpay</p>
                                 </form>
                             </div>
                         )}

@@ -25,7 +25,44 @@
         .hidden { display: none; }
 
         /* General Form Inputs */
-        input, select, textarea { width: 100%; padding: 1rem; border: 1px solid #E5D9C5; background-color: #FFF9F2; margin-bottom: 1rem; border-radius: 4px; }
+        /* 1. Global Rhythm Reset */
+        input, select, textarea, .iti { 
+            width: 100%; 
+            display: block;
+            height: 52px; 
+            padding: 0 1rem; 
+            border: 1px solid #E5D9C5; 
+            background-color: #FFF9F2; 
+            margin-bottom: 1.5rem !important; /* Uniform 24px vertical gap */
+            border-radius: 4px; 
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* 2. Textarea adjustment (since it needs to be taller) */
+        textarea { height: auto !important; min-height: 100px; padding: 1rem !important; }
+
+        /* 3. Phone Input Internal Fixes */
+        .iti input { 
+            margin-bottom: 0 !important; /* Internal input shouldn't push the container */
+            padding-left: 95px !important; 
+        }
+        .iti__selected-flag { background-color: transparent !important; padding-left: 12px; }
+        .iti__country-list { 
+            background-color: #FDFBF7 !important; 
+            border: 1px solid #E5D9C5 !important; 
+            color: #2D241E !important; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+
+        /* 4. Grid Container Rhythm */
+        .form-row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem; /* This ensures the vertical rhythm we discussed */
+        }
+        .form-row-grid input { margin-bottom: 0 !important; }
 
         /* Phone Input Specific Overrides */
         /* Phone Input Professional Polishing */
@@ -85,9 +122,20 @@
 
             <form id="sankalp-form">
                 <input type="text" id="form-name" placeholder="Full Name" required>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
-                    <input type="text" id="form-country" placeholder="Country" required>
+                <div class="form-row-grid">
+                <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
+                    <input list="country-options" id="form-country" placeholder="Country" required>
+                    <datalist id="country-options">
+                        <option value="India">
+                        <option value="USA">
+                        <option value="UAE">
+                        <option value="UK">
+                        <option value="Canada">
+                        <option value="Australia">
+                        <option value="Singapore">
+                        <option value="Germany">
+                        <option value="Other Country">
+                    </datalist>
                 </div>
                 
                 <label id="date-label" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Preferred Date</label>

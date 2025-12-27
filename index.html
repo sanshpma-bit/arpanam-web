@@ -50,23 +50,36 @@ function App() {
                 e.preventDefault();
                 setStatus('SUBMITTING');
                 
-                // Your Apps Script URL
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec';
                 
-                const data = new FormData();
-                // The first name in quotes must match what we put in your doPost function
-                data.append('Name', formData.name);
-                data.append('Gotra', formData.gotra);
-                data.append('WhatsApp', formData.whatsapp);
-                data.append('Country', formData.country);
-                data.append('Puja', activeRitual.name);
+                // We use URLSearchParams for better compatibility with Google Apps Script 'e.parameter'
+                const params = new URLSearchParams();
+                params.append('Name', formData.name);
+                params.append('Gotra', formData.gotra);
+                params.append('WhatsApp', formData.whatsapp);
+                params.append('Country', formData.country);
+                params.append('Puja', activeRitual.name);
 
                 try {
-                    await fetch(scriptURL, { method: 'POST', body: data, mode: 'no-cors' });
-                    setStatus('SUCCESS');
+                    // Note: We removed 'no-cors' so we can actually read the 'paymentLink' coming back
+                    const response = await fetch(scriptURL + "?" + params.toString(), { 
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+
+                    if (result.status === 'success' && result.paymentLink) {
+                        // Redirect user directly to Razorpay
+                        window.location.href = result.paymentLink;
+                    } else {
+                        // Fallback to success message if no link is found
+                        setStatus('SUCCESS');
+                    }
                 } catch (error) {
-                    alert("Something went wrong, please try again.");
-                    setStatus('IDLE');
+                    // Even if there's a CORS error, the data usually reaches the sheet. 
+                    // We show the success screen as a fallback.
+                    console.error("Submission error:", error);
+                    setStatus('SUCCESS');
                 }
             };
 

@@ -4,26 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arpanam | Vedic Rituals</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+
     <style>
+        /* Core Brand Colors & Fonts */
         :root { --saffron: #D45D12; --cream: #FDFBF7; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--cream); color: #2D241E; margin: 0; }
         h1, h2, h3 { font-family: 'Cinzel', serif; }
+
+        /* UI Components */
         .saffron-btn { background: var(--saffron); color: white; border: none; cursor: pointer; transition: 0.3s; padding: 1rem 2rem; font-weight: bold; width: 100%; border-radius: 4px; }
         .saffron-btn:hover { background: #b04b0d; transform: translateY(-2px); }
         .ritual-card { transition: 0.3s; border: 1px solid #E5D9C5; background: white; cursor: pointer; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
         .ritual-card:hover { border-color: var(--saffron); transform: translateY(-4px); }
         .hidden { display: none; }
+
+        /* General Form Inputs */
         input, select, textarea { width: 100%; padding: 1rem; border: 1px solid #E5D9C5; background-color: #FFF9F2; margin-bottom: 1rem; border-radius: 4px; }
+
+        /* Phone Input Specific Overrides */
+        .iti { width: 100%; margin-bottom: 1rem; }
+        .iti input { 
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+            padding-left: 52px !important; 
+            background-color: #FFF9F2 !important;
+            border: 1px solid #E5D9C5 !important;
+        }
+        .iti__country-list { background-color: #FDFBF7 !important; border: 1px solid #E5D9C5 !important; color: #2D241E !important; }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
-<style>
-    /* Ensure the dropdown fits the Arpanam style */
-    .iti { width: 100%; margin-bottom: 1rem; }
-    .iti__country-list { background-color: var(--cream); border: 1px solid #E5D9C5; }
-</style>
 </head>
 <body>
 
@@ -77,7 +91,16 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
-        
+        let iti; // This variable will store the phone selector instance
+        window.addEventListener('DOMContentLoaded', () => {
+            const input = document.querySelector("#form-whatsapp");
+            iti = window.intlTelInput(input, {
+                initialCountry: "in",
+                separateDialCode: true,
+                preferredCountries: ["in", "us", "ae", "gb"],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
+            });
+        });
         const rituals = [
             { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu, bringing peace to the household." },
             { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." },
@@ -170,7 +193,17 @@
             params.append('Puja', selectedRitual.name);
             params.append('Date', document.getElementById('form-date').value);
             params.append('Country', document.getElementById('form-country').value);
-            params.append('WhatsApp', document.getElementById('form-whatsapp').value);
+            // 1. Validate the phone number first
+            if (!iti.isValidNumber()) {
+                alert("Please enter a valid WhatsApp number for the selected country.");
+                btn.disabled = false;
+                btn.innerText = originalText;
+                return;
+            }
+
+            // 2. Get the full international number (e.g., +919876543210)
+            const fullWhatsApp = iti.getNumber();
+            params.append('WhatsApp', fullWhatsApp);
             params.append('Flexibility', document.getElementById('form-flex').checked ? 'Yes' : 'No');
             params.append('Notes', document.getElementById('form-notes').value || 'Standard');
 

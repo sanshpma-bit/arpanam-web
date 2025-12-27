@@ -1,1 +1,86 @@
-Hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arpanam | Sacred Rituals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #FFF9F2; color: #2D1E1B; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .ritual-card { transition: all 0.3s ease; border: 0.5px solid #E5D9C5; }
+        .ritual-card:hover { border-color: #D45D12; background-color: white; }
+        .saffron-btn { background-color: #D45D12; color: white; transition: all 0.3s; }
+        .saffron-btn:hover { background-color: #B04A0D; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const rituals = [
+            { id: 1, name: "Griha Pravesh", desc: "Sanctify your new dwelling with Vastu Shanti.", details: "A complete purification of your home. Includes Ganesh Homa and Vastu Shanti to ensure peace and prosperity." },
+            { id: 2, name: "Satyanarayan Katha", desc: "For family harmony and universal gratitude.", details: "The traditional 5-chapter narration and puja for Lord Vishnu, bringing peace to the household." },
+            { id: 3, name: "Mahamrityunjaya", desc: "A powerful Vedic shield for health.", details: "Intense jaap performed by Vedic priests for recovery and protection against health hurdles." },
+            { id: 4, name: "Pitru Dosh", desc: "Honoring ancestors at the banks of Ganga.", details: "Rituals performed at sacred ghats to provide peace to the souls of ancestors." },
+            { id: 5, name: "Navagraha Shanti", desc: "Align energies to overcome life hurdles.", details: "Targeted prayers for the nine planets to smooth over career or health complications." },
+            { id: 6, name: "Naamkaran", desc: "Bless your child's first milestone.", details: "Authentic Vedic naming ceremony including Nakshatra analysis and blessings." }
+        ];
+
+        function App() {
+            const [view, setView] = useState('LOBBY'); // LOBBY, DETAIL
+            const [activeRitual, setActiveRitual] = useState(null);
+
+            const selectRitual = (r) => {
+                setActiveRitual(r);
+                setView('DETAIL');
+                window.scrollTo(0,0);
+            };
+
+            return (
+                <div className="min-h-screen pb-20">
+                    {/* Hero Section */}
+                    <section className="py-20 px-6 text-center">
+                        <h1 className="text-5xl md:text-6xl font-bold mb-6">Arpanam</h1>
+                        <p className="text-xl opacity-80 italic max-w-2xl mx-auto leading-relaxed">
+                            Sacred rituals, thoughtfully arranged—wherever you are, your intention is honored.
+                        </p>
+                    </section>
+
+                    {/* Main Content */}
+                    <main className="max-w-5xl mx-auto px-6">
+                        {view === 'LOBBY' ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {rituals.map(r => (
+                                    <div key={r.id} className="ritual-card p-10 bg-white/50 cursor-pointer" onClick={() => selectRitual(r)}>
+                                        <h3 className="text-2xl mb-3">{r.name}</h3>
+                                        <p className="opacity-70 mb-6">{r.desc}</p>
+                                        <span className="text-xs uppercase tracking-widest text-[#D45D12] font-bold">Understand This Ritual →</span>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="bg-white p-8 md:p-16 border border-[#E5D9C5]">
+                                <button onClick={() => setView('LOBBY')} className="mb-8 opacity-50 hover:opacity-100 text-sm">← BACK TO ALL RITUALS</button>
+                                <h2 className="text-4xl mb-6">{activeRitual.name}</h2>
+                                <p className="text-xl leading-relaxed opacity-90 mb-10">{activeRitual.details}</p>
+                                <button className="saffron-btn px-10 py-4 text-lg font-bold">Proceed with this Ritual</button>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

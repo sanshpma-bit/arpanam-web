@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arpanam | Vedic Rituals</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 
@@ -18,226 +18,220 @@
 
         .saffron-btn { background: var(--saffron); color: white; border: none; cursor: pointer; transition: 0.3s; padding: 1rem 2rem; font-weight: bold; width: 100%; border-radius: 4px; }
         .saffron-btn:hover { background: #b04b0d; transform: translateY(-2px); }
-        
+
         .ritual-card { transition: 0.3s; border: 1px solid #E5D9C5; background: white; cursor: pointer; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%; border-radius: 4px; }
         .ritual-card:hover { border-color: var(--saffron); transform: translateY(-4px); }
-        
-        /* Input Normalization */
-        input:not([type="checkbox"]), select, textarea { 
-            width: 100%; 
-            height: 52px; 
-            padding: 0 1rem; 
-            border: 1px solid #E5D9C5; 
-            background-color: #FFF9F2; 
-            margin-bottom: 1.5rem; 
-            border-radius: 4px; 
+
+        input:not([type="checkbox"]), select, textarea {
+            width: 100%;
+            height: 52px;
+            padding: 0 1rem;
+            border: 1px solid #E5D9C5;
+            background-color: #FFF9F2;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
             box-sizing: border-box;
             font-family: inherit;
         }
 
         textarea { height: auto !important; min-height: 120px; padding: 1rem !important; }
 
-        /* WhatsApp Dropdown UI Fix */
         .iti { width: 100%; margin-bottom: 1.5rem; }
         .iti__country-list { background-color: #FDFBF7 !important; color: #2D241E !important; z-index: 100; border: 1px solid #E5D9C5 !important; }
-        
+
         .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .hidden { display: none !important; }
-
-        /* Success State */
-        .btn-success { background: #1a7f37 !important; }
     </style>
 </head>
 <body>
 
-    <header class="p-8 text-center border-b border-[#E5D9C5] bg-white">
-        <a href="#" onclick="showLobby(); return false;" class="inline-block hover:opacity-80 transition-opacity no-underline">
-            <h1 class="text-4xl tracking-widest text-[#D45D12] font-bold">ARPANAM</h1>
-            <p class="text-xs uppercase tracking-[0.3em] opacity-60 mt-2">Authentic Vedic Sankalp</p>
-        </a>
-    </header>
+<header class="p-8 text-center border-b border-[#E5D9C5] bg-white">
+    <a href="#" onclick="showLobby(); return false;" class="inline-block hover:opacity-80 transition-opacity no-underline">
+        <h1 class="text-4xl tracking-widest text-[#D45D12] font-bold">ARPANAM</h1>
+        <p class="text-xs uppercase tracking-[0.3em] opacity-60 mt-2">Authentic Vedic Sankalp</p>
+    </a>
+</header>
 
-    <main class="max-w-6xl mx-auto p-6 md:py-16">
-        <div id="lobby-view" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+<main class="max-w-6xl mx-auto p-6 md:py-16">
 
-        <div id="detail-view" class="max-w-3xl mx-auto bg-white p-8 md:p-16 border border-[#E5D9C5] hidden">
-            <button onclick="showLobby()" class="mb-8 opacity-50 text-sm">← BACK TO ALL RITUALS</button>
-            <h2 id="detail-title" class="text-4xl mb-4 font-bold"></h2>
-            <p id="detail-price" class="text-2xl text-[#D45D12] font-bold mb-8"></p>
-            <p id="detail-desc" class="text-lg mb-10 opacity-90 leading-relaxed"></p>
-            <button onclick="showForm()" class="saffron-btn text-xl">Start Sankalp Process</button>
+    <!-- LOBBY -->
+    <div id="lobby-view" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+
+    <!-- DETAIL -->
+    <div id="detail-view" class="max-w-3xl mx-auto bg-white p-8 md:p-16 border border-[#E5D9C5] hidden">
+        <button onclick="showLobby()" class="mb-8 opacity-50 text-sm">← BACK TO ALL RITUALS</button>
+        <h2 id="detail-title" class="text-4xl mb-6 font-bold"></h2>
+        <p id="detail-desc" class="text-lg mb-10 opacity-90 leading-relaxed"></p>
+        <button onclick="showForm()" class="saffron-btn text-xl">
+            Begin Sankalp Request
+        </button>
+    </div>
+
+    <!-- FORM -->
+    <div id="form-view" class="max-w-2xl mx-auto bg-white p-8 md:p-12 border border-[#E5D9C5] hidden">
+        <button onclick="showDetail()" class="mb-8 opacity-50 text-sm">← BACK</button>
+        <h2 class="text-3xl mb-8 font-bold">Sankalp Registration</h2>
+
+        <div class="bg-[#FFF9F2] p-4 border-l-4 border-[#D45D12] mb-8 text-sm italic">
+            Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp.
         </div>
 
-        <div id="form-view" class="max-w-2xl mx-auto bg-white p-8 md:p-12 border border-[#E5D9C5] hidden">
-            <button onclick="showDetail()" class="mb-8 opacity-50 text-sm">← BACK</button>
-            <h2 class="text-3xl mb-8 font-bold">Sankalp Registration</h2>
-            
-            <div class="bg-[#FFF9F2] p-4 border-l-4 border-[#D45D12] mb-8 text-sm italic">
-                Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp.
+        <form id="sankalp-form">
+            <input type="text" id="form-name" placeholder="Full Name" required>
+            <input type="email" id="form-email" placeholder="Email Address" required>
+
+            <div class="form-row-grid">
+                <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
+                <select id="form-country" required>
+                    <option value="" disabled selected>Select Country</option>
+                    <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UAE">UAE</option>
+                    <option value="UK">UK</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Other">Other Country</option>
+                </select>
             </div>
 
-            <form id="sankalp-form">
-                <input type="text" id="form-name" placeholder="Full Name" required>
-                <input type="email" id="form-email" placeholder="Email Address" required>
-                
-                <div class="form-row-grid">
-                    <input type="text" id="form-gotra" placeholder="Gotra (Lineage)">
-                    <select id="form-country" required>
-                        <option value="" disabled selected>Select Country</option>
-                        <option value="India">India</option>
-                        <option value="USA">USA</option>
-                        <option value="UAE">UAE</option>
-                        <option value="UK">UK</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="Other">Other Country</option>
-                    </select>
-                </div>
-                
-                <label id="date-label" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Preferred Date</label>
-                <div id="date-input-container"></div>
+            <label id="date-label" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Preferred Date</label>
+            <div id="date-input-container"></div>
 
-                <div class="flex items-center space-x-3 p-4 bg-[#FFF9F2] border border-[#E5D9C5] mb-6 rounded">
-                    <input type="checkbox" id="form-flex" class="w-5 h-5 accent-[#D45D12]">
-                    <label for="form-flex" class="text-sm cursor-pointer">Flexible with date for better Muhurat.</label>
-                </div>
+            <div class="flex items-center space-x-3 p-4 bg-[#FFF9F2] border border-[#E5D9C5] mb-6 rounded">
+                <input type="checkbox" id="form-flex" class="w-5 h-5 accent-[#D45D12]">
+                <label for="form-flex" class="text-sm cursor-pointer">
+                    Flexible with date for better Muhurat.
+                </label>
+            </div>
 
-                <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">WhatsApp Number</label>
-                <input type="tel" id="form-whatsapp" required>      
-                
-                <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Additional Details</label>
-                <textarea id="form-notes" placeholder="Any specific prayers or instructions?"></textarea>
+            <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">WhatsApp Number</label>
+            <input type="tel" id="form-whatsapp" required>
 
-                <button type="submit" id="submit-btn" class="saffron-btn text-lg">Initiate Sankalp</button>
-            </form>
+            <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Additional Details</label>
+            <textarea id="form-notes" placeholder="Any specific prayers or instructions?"></textarea>
+
+            <button type="submit" id="submit-btn" class="saffron-btn text-lg">
+                Submit Sankalp Request
+            </button>
+        </form>
+    </div>
+</main>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
+let iti;
+
+const rituals = [
+    { id: 1, name: "Satyanarayan Katha", price: 4500, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu.", note: "List family members to be mentioned in the Sankalp." },
+    { id: 2, name: "Naamkaran", price: 3100, type: "STANDARD", desc: "Authentic Vedic naming ceremony.", note: "Provide Baby's Gender and Father's Name." },
+    { id: 3, name: "Mahamrityunjaya", price: 8500, type: "EMERGENCY", desc: "Intense jaap for health protection.", note: "Provide Full Name and Health Condition of the person." },
+    { id: 4, name: "Navagraha Shanti", price: 7500, type: "STANDARD", desc: "Targeted prayers for the nine planets.", note: "Mention specific life hurdles you're facing." },
+    { id: 5, name: "Pitru Dosh", price: 21000, type: "PERIOD", desc: "Rituals to provide peace to ancestors.", note: "Mention names of ancestors if known." },
+    { id: 6, name: "Griha Pravesh", price: 15500, type: "STANDARD", desc: "Complete home purification ritual.", note: "Provide the address of the new home." }
+];
+
+let selectedRitual = null;
+
+window.addEventListener('DOMContentLoaded', () => {
+    iti = window.intlTelInput(document.querySelector("#form-whatsapp"), {
+        initialCountry: "in",
+        separateDialCode: true,
+        preferredCountries: ["in", "us", "ae", "gb"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
+    });
+    renderLobby();
+});
+
+function renderLobby() {
+    const lobby = document.getElementById('lobby-view');
+    lobby.innerHTML = rituals.map(r => `
+        <div class="ritual-card" onclick="selectRitual(${r.id})">
+            <h3 class="text-2xl mb-3 font-bold">${r.name}</h3>
+            <p class="text-sm opacity-60 italic">View ritual details</p>
         </div>
-    </main>
+    `).join('');
+    document.getElementById('lobby-view').classList.remove('hidden');
+    document.getElementById('detail-view').classList.add('hidden');
+    document.getElementById('form-view').classList.add('hidden');
+}
 
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
-        let iti; 
+function selectRitual(id) {
+    selectedRitual = rituals.find(r => r.id === id);
+    showDetail();
+}
 
-        const rituals = [
-            { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu.", note: "List family members to be mentioned in the Sankalp." },
-            { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Authentic Vedic naming ceremony.", note: "Provide Baby's Gender and Father's Name." },
-            { id: 3, name: "Mahamrityunjaya", price: 8500, usd: 105, type: "EMERGENCY", desc: "Intense jaap for health protection.", note: "Provide Full Name and Health Condition of the person." },
-            { id: 4, name: "Navagraha Shanti", price: 7500, usd: 90, type: "STANDARD", desc: "Targeted prayers for the nine planets.", note: "Mention specific life hurdles you're facing." },
-            { id: 5, name: "Pitru Dosh", price: 21000, usd: 250, type: "PERIOD", desc: "Rituals to provide peace to ancestors.", note: "Mention names of ancestors if known." },
-            { id: 6, name: "Griha Pravesh", price: 15500, usd: 185, type: "STANDARD", desc: "Complete home purification ritual.", note: "Provide the address of the new home." }
-        ];
+function showLobby() { renderLobby(); }
 
-        let selectedRitual = null;
+function showDetail() {
+    document.getElementById('detail-title').innerText = selectedRitual.name;
+    document.getElementById('detail-desc').innerText = selectedRitual.desc;
+    document.getElementById('lobby-view').classList.add('hidden');
+    document.getElementById('detail-view').classList.remove('hidden');
+    document.getElementById('form-view').classList.add('hidden');
+}
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const input = document.querySelector("#form-whatsapp");
-            iti = window.intlTelInput(input, {
-                initialCountry: "in",
-                separateDialCode: true,
-                preferredCountries: ["in", "us", "ae", "gb"],
-                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
-            });
-            renderLobby();
-        });
+function showForm() {
+    const dateLabel = document.getElementById('date-label');
+    const container = document.getElementById('date-input-container');
+    document.getElementById('form-notes').placeholder = selectedRitual.note || "";
 
-        function renderLobby() {
-            const lobby = document.getElementById('lobby-view');
-            lobby.innerHTML = rituals.map(r => `
-                <div class="ritual-card" onclick="selectRitual(${r.id})">
-                    <h3 class="text-2xl mb-3 font-bold">${r.name}</h3>
-                    <p class="text-lg font-semibold text-[#D45D12]">₹${r.price.toLocaleString()} <span class="text-sm font-normal opacity-50">/ ~$${r.usd}</span></p>
-                </div>
-            `).join('');
-            document.getElementById('lobby-view').classList.remove('hidden');
-            document.getElementById('detail-view').classList.add('hidden');
-            document.getElementById('form-view').classList.add('hidden');
-        }
+    if (selectedRitual.type === 'PERIOD') {
+        dateLabel.innerText = "Preferred Period";
+        container.innerHTML = `<select id="form-date" required>
+            <option value="Pitru Paksha">Upcoming Pitru Paksha</option>
+            <option value="Amavasya">Amavasya (Monthly)</option>
+            <option value="Annual Tithi">Annual Tithi (Varshik)</option>
+        </select>`;
+    } else if (selectedRitual.type === 'EMERGENCY') {
+        dateLabel.innerText = "Timing Urgency";
+        container.innerHTML = `<select id="form-date" required>
+            <option value="ASAP">ASAP - Health Emergency</option>
+            <option value="48 Hours">Within 48 Hours</option>
+        </select>`;
+    } else {
+        dateLabel.innerText = "Preferred Date";
+        const minDate = new Date(Date.now() + 172800000).toISOString().split('T')[0];
+        container.innerHTML = `<input type="date" id="form-date" min="${minDate}" required>`;
+    }
 
-        function selectRitual(id) {
-            selectedRitual = rituals.find(r => r.id === id);
-            showDetail();
-        }
+    document.getElementById('detail-view').classList.add('hidden');
+    document.getElementById('form-view').classList.remove('hidden');
+}
 
-        function showLobby() { renderLobby(); }
+document.getElementById('sankalp-form').onsubmit = function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.innerText = "Redirecting to Secure Payment...";
+    btn.disabled = true;
 
-        function showDetail() {
-            document.getElementById('detail-title').innerText = selectedRitual.name;
-            document.getElementById('detail-price').innerText = `Dakshina: ₹${selectedRitual.price.toLocaleString()} (~$${selectedRitual.usd})`;
-            document.getElementById('detail-desc').innerText = selectedRitual.desc;
-            document.getElementById('lobby-view').classList.add('hidden');
-            document.getElementById('detail-view').classList.remove('hidden');
-            document.getElementById('form-view').classList.add('hidden');
-        }
+    const hiddenForm = document.createElement('form');
+    hiddenForm.method = 'POST';
+    hiddenForm.action = SCRIPT_URL;
+    hiddenForm.style.display = 'none';
 
-        function showForm() {
-            const dateLabel = document.getElementById('date-label');
-            const container = document.getElementById('date-input-container');
-            const notesField = document.getElementById('form-notes');
-            const submitBtn = document.getElementById('submit-btn');
+    const fields = {
+        Name: form-name.value,
+        Email: form-email.value,
+        Gotra: form-gotra.value || 'NA',
+        Puja: selectedRitual.name,
+        Date: document.getElementById('form-date').value,
+        Country: form-country.value,
+        WhatsApp: iti.getNumber(),
+        Flexibility: form-flex.checked ? 'Yes' : 'No',
+        Notes: form-notes.value || 'Standard'
+    };
 
-            submitBtn.innerText = `Pay ₹${selectedRitual.price.toLocaleString()} & Book`;
-            submitBtn.className = "saffron-btn text-lg";
-            submitBtn.disabled = false;
-            notesField.placeholder = selectedRitual.note || "Any specific prayers or instructions?";
+    for (const key in fields) {
+        const input = document.createElement('input');
+        input.name = key;
+        input.value = fields[key];
+        hiddenForm.appendChild(input);
+    }
 
-            if (selectedRitual.type === 'PERIOD') {
-                dateLabel.innerText = "Preferred Period";
-                container.innerHTML = `<select id="form-date" required><option value="Pitru Paksha">Upcoming Pitru Paksha</option><option value="Amavasya">Amavasya (Monthly)</option><option value="Annual Tithi">Annual Tithi (Varshik)</option></select>`;
-            } else if (selectedRitual.type === 'EMERGENCY') {
-                dateLabel.innerText = "Timing Urgency";
-                container.innerHTML = `<select id="form-date" required><option value="ASAP">ASAP - Health Emergency</option><option value="48 Hours">Within 48 Hours</option></select>`;
-            } else {
-                dateLabel.innerText = "Preferred Date";
-                const minDate = new Date(Date.now() + 172800000).toISOString().split('T')[0];
-                container.innerHTML = `<input type="date" id="form-date" min="${minDate}" required>`;
-            }
-
-            document.getElementById('detail-view').classList.add('hidden');
-            document.getElementById('form-view').classList.remove('hidden');
-        }
-
-        // SUBMISSION LOGIC - Production Hardened
-        // SUBMISSION LOGIC - Step 1: Turbo Redirect Implementation
-        document.getElementById('sankalp-form').onsubmit = function(e) {
-            e.preventDefault(); // Stop the default fetch behavior
-            
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "Redirecting to Secure Payment...";
-            btn.disabled = true;
-
-            // 1. Create a hidden form dynamically
-            const hiddenForm = document.createElement('form');
-            hiddenForm.method = 'POST';
-            hiddenForm.action = SCRIPT_URL; // Your Google Script URL
-            hiddenForm.style.display = 'none';
-
-            // 2. Map all your current UI fields into the hidden form
-            const fields = {
-                'Name': document.getElementById('form-name').value,
-                'Email': document.getElementById('form-email').value,
-                'Gotra': document.getElementById('form-gotra').value || 'NA',
-                'Puja': selectedRitual.name,
-                'Date': document.getElementById('form-date').value,
-                'Country': document.getElementById('form-country').value,
-                'WhatsApp': iti.getNumber(),
-                'Flexibility': document.getElementById('form-flex').checked ? 'Yes' : 'No',
-                'Notes': document.getElementById('form-notes').value || 'Standard'
-            };
-
-            // 3. Append inputs to the form
-            for (const key in fields) {
-                const input = document.createElement('input');
-                input.name = key;
-                input.value = fields[key];
-                hiddenForm.appendChild(input);
-            }
-
-            // 4. Submit the form
-            document.body.appendChild(hiddenForm);
-            hiddenForm.submit(); 
-            
-            // Note: The browser will now leave this page and go to Google/Razorpay.
-        };
-    </script>
+    document.body.appendChild(hiddenForm);
+    hiddenForm.submit();
+};
+</script>
 </body>
 </html>

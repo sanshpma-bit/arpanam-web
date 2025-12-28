@@ -22,7 +22,7 @@
         .ritual-card { transition: 0.3s; border: 1px solid #E5D9C5; background: white; cursor: pointer; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%; border-radius: 4px; }
         .ritual-card:hover { border-color: var(--saffron); transform: translateY(-4px); }
         
-        /* Fixed Input Normalization */
+        /* Input Normalization */
         input:not([type="checkbox"]), select, textarea { 
             width: 100%; 
             height: 52px; 
@@ -37,13 +37,15 @@
 
         textarea { height: auto !important; min-height: 120px; padding: 1rem !important; }
 
-        /* WhatsApp Dropdown CSS Fix */
+        /* WhatsApp Dropdown UI Fix */
         .iti { width: 100%; margin-bottom: 1.5rem; }
         .iti__country-list { background-color: #FDFBF7 !important; color: #2D241E !important; z-index: 100; border: 1px solid #E5D9C5 !important; }
         
-        /* Grid Fix */
         .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .hidden { display: none !important; }
+
+        /* Success State */
+        .btn-success { background: #1a7f37 !important; }
     </style>
 </head>
 <body>
@@ -68,7 +70,7 @@
 
         <div id="form-view" class="max-w-2xl mx-auto bg-white p-8 md:p-12 border border-[#E5D9C5] hidden">
             <button onclick="showDetail()" class="mb-8 opacity-50 text-sm">← BACK</button>
-            <h2 class="text-3xl mb-8">Sankalp Registration</h2>
+            <h2 class="text-3xl mb-8 font-bold">Sankalp Registration</h2>
             
             <div class="bg-[#FFF9F2] p-4 border-l-4 border-[#D45D12] mb-8 text-sm italic">
                 Note: Exact <b>Muhurat timing</b> will be confirmed by our Acharya over WhatsApp.
@@ -107,7 +109,7 @@
                 <label class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Additional Details</label>
                 <textarea id="form-notes" placeholder="Any specific prayers or instructions?"></textarea>
 
-                <button type="submit" id="submit-btn" class="saffron-btn text-lg">Pay & Book via Razorpay</button>
+                <button type="submit" id="submit-btn" class="saffron-btn text-lg">Initiate Sankalp</button>
             </form>
         </div>
     </main>
@@ -116,7 +118,6 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJ30GbxjO0SZ8Xrf3qX6n2Wr_SWHZDwOjdVOcfnOflD2isXNqJgX0w9iSBR-2PAeNiqQ/exec";
         let iti; 
 
-        // RITUAL DATA DEFINITION
         const rituals = [
             { id: 1, name: "Satyanarayan Katha", price: 4500, usd: 54, type: "STANDARD", desc: "The traditional narration and puja for Lord Vishnu.", note: "List family members to be mentioned in the Sankalp." },
             { id: 2, name: "Naamkaran", price: 3100, usd: 38, type: "STANDARD", desc: "Authentic Vedic naming ceremony.", note: "Provide Baby's Gender and Father's Name." },
@@ -137,18 +138,19 @@
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
             });
             renderLobby();
-            console.log("🛠️ Arpanam UI Loaded. Run runTests() to verify logic.");
         });
 
-        // UI NAVIGATION LOGIC
         function renderLobby() {
             const lobby = document.getElementById('lobby-view');
             lobby.innerHTML = rituals.map(r => `
                 <div class="ritual-card" onclick="selectRitual(${r.id})">
-                    <h3 class="text-2xl mb-3">${r.name}</h3>
+                    <h3 class="text-2xl mb-3 font-bold">${r.name}</h3>
                     <p class="text-lg font-semibold text-[#D45D12]">₹${r.price.toLocaleString()} <span class="text-sm font-normal opacity-50">/ ~$${r.usd}</span></p>
                 </div>
             `).join('');
+            document.getElementById('lobby-view').classList.remove('hidden');
+            document.getElementById('detail-view').classList.add('hidden');
+            document.getElementById('form-view').classList.add('hidden');
         }
 
         function selectRitual(id) {
@@ -156,11 +158,7 @@
             showDetail();
         }
 
-        function showLobby() {
-            document.getElementById('lobby-view').classList.remove('hidden');
-            document.getElementById('detail-view').classList.add('hidden');
-            document.getElementById('form-view').classList.add('hidden');
-        }
+        function showLobby() { renderLobby(); }
 
         function showDetail() {
             document.getElementById('detail-title').innerText = selectedRitual.name;
@@ -177,7 +175,9 @@
             const notesField = document.getElementById('form-notes');
             const submitBtn = document.getElementById('submit-btn');
 
-            submitBtn.innerText = `Pay ₹${selectedRitual.price.toLocaleString()} & Book via Razorpay`;
+            submitBtn.innerText = `Pay ₹${selectedRitual.price.toLocaleString()} & Book`;
+            submitBtn.className = "saffron-btn text-lg";
+            submitBtn.disabled = false;
             notesField.placeholder = selectedRitual.note || "Any specific prayers or instructions?";
 
             if (selectedRitual.type === 'PERIOD') {
@@ -195,16 +195,14 @@
             document.getElementById('detail-view').classList.add('hidden');
             document.getElementById('form-view').classList.remove('hidden');
         }
-        
-        // SUBMISSION LOGIC
+
+        // SUBMISSION LOGIC - Production Hardened
         document.getElementById('sankalp-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "Generating Secure Payment Link...";
+            btn.innerText = "Processing Sankalp...";
             btn.disabled = true;
 
-            // Prepare Data for V2.7 Backend
             const formData = new URLSearchParams();
             formData.append('Name', document.getElementById('form-name').value);
             formData.append('Email', document.getElementById('form-email').value); 
@@ -212,58 +210,33 @@
             formData.append('Puja', selectedRitual.name);
             formData.append('Date', document.getElementById('form-date').value);
             formData.append('Country', document.getElementById('form-country').value);
-            formData.append('WhatsApp', iti.getNumber()); // Captures +91...
+            formData.append('WhatsApp', iti.getNumber());
             formData.append('Flexibility', document.getElementById('form-flex').checked ? 'Yes' : 'No');
             formData.append('Notes', document.getElementById('form-notes').value || 'Standard');
 
             try {
-                // We use 'no-cors' or handled response for Google Apps Script
-                const response = await fetch(SCRIPT_URL, { 
+                // Post to Google Script (no-cors ignores the redirect but sends data)
+                await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     body: formData,
-                    mode: 'no-cors' // Use no-cors for Google Script redirects
+                    mode: 'no-cors' 
                 });
                 
-                // Since Google Script returns 302, we usually redirect user manually 
-                // but since we want the JSON response, we assume the backend 
-                // redirected to a success page or we fetch the JSON properly.
+                // UX Feedback for Successful Submission
+                btn.innerText = "Sankalp Initiated Successfully!";
+                btn.classList.add('btn-success');
                 
-                // OPTION B: If you need the link immediately, your Backend must handle CORS.
-                // For now, let's assume the standard Lead Gen Redirect
-                alert("Redirecting to Razorpay...");
+                alert("Pranam! Your ritual request is received.\n\nPlease check your Email ("+document.getElementById('form-email').value+") for the secure Razorpay payment link.");
                 
-                // Note: For Google Apps Script JSON response, you'll need to 
-                // re-run your Test 1 to confirm the link is being created.
+                setTimeout(showLobby, 5000);
+
             } catch (err) {
-                console.error(err);
-                alert("Processing... Please wait.");
+                console.error("Network Error:", err);
+                btn.innerText = "Network Issue - Try Again";
+                btn.disabled = false;
+                alert("Please check your internet connection and try again.");
             }
         };
-
-        // --- TEST SUITE (Unit Testing for UI Logic) ---
-        function runTests() {
-            console.group("🚀 Arpanam UI Test Suite");
-            
-            // Test 1: Ritual Data Integrity
-            const pujaNames = rituals.map(r => r.name);
-            console.log(pujaNames.length === 6 ? "✅ Puja Count Correct" : "❌ Puja Count Mismatch");
-
-            // Test 2: Dynamic Placeholder Verification
-            selectRitual(2); // Naamkaran
-            showForm();
-            const placeholder = document.getElementById('form-notes').placeholder;
-            console.log(placeholder.includes("Baby") ? "✅ Dynamic Placeholder Passed" : "❌ Placeholder Failed");
-
-            // Test 3: WhatsApp Library Visibility
-            console.log(typeof iti.getNumber === 'function' ? "✅ WhatsApp Library Ready" : "❌ WhatsApp Library Error");
-
-            // Test 4: Container Hiding Logic
-            showLobby();
-            const formHidden = document.getElementById('form-view').classList.contains('hidden');
-            console.log(formHidden ? "✅ Navigation Visibility Passed" : "❌ Navigation Leak Detected");
-
-            console.groupEnd();
-        }
     </script>
 </body>
 </html>

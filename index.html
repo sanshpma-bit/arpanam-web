@@ -197,45 +197,46 @@
         }
 
         // SUBMISSION LOGIC - Production Hardened
-        document.getElementById('sankalp-form').onsubmit = async (e) => {
-            e.preventDefault();
+        // SUBMISSION LOGIC - Step 1: Turbo Redirect Implementation
+        document.getElementById('sankalp-form').onsubmit = function(e) {
+            e.preventDefault(); // Stop the default fetch behavior
+            
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "Processing Sankalp...";
+            btn.innerText = "Redirecting to Secure Payment...";
             btn.disabled = true;
 
-            const formData = new URLSearchParams();
-            formData.append('Name', document.getElementById('form-name').value);
-            formData.append('Email', document.getElementById('form-email').value); 
-            formData.append('Gotra', document.getElementById('form-gotra').value || 'NA');
-            formData.append('Puja', selectedRitual.name);
-            formData.append('Date', document.getElementById('form-date').value);
-            formData.append('Country', document.getElementById('form-country').value);
-            formData.append('WhatsApp', iti.getNumber());
-            formData.append('Flexibility', document.getElementById('form-flex').checked ? 'Yes' : 'No');
-            formData.append('Notes', document.getElementById('form-notes').value || 'Standard');
+            // 1. Create a hidden form dynamically
+            const hiddenForm = document.createElement('form');
+            hiddenForm.method = 'POST';
+            hiddenForm.action = SCRIPT_URL; // Your Google Script URL
+            hiddenForm.style.display = 'none';
 
-            try {
-                // Post to Google Script (no-cors ignores the redirect but sends data)
-                await fetch(SCRIPT_URL, { 
-                    method: 'POST', 
-                    body: formData,
-                    mode: 'no-cors' 
-                });
-                
-                // UX Feedback for Successful Submission
-                btn.innerText = "Sankalp Initiated Successfully!";
-                btn.classList.add('btn-success');
-                
-                alert("Pranam! Your ritual request is received.\n\nPlease check your Email ("+document.getElementById('form-email').value+") for the secure Razorpay payment link.");
-                
-                setTimeout(showLobby, 5000);
+            // 2. Map all your current UI fields into the hidden form
+            const fields = {
+                'Name': document.getElementById('form-name').value,
+                'Email': document.getElementById('form-email').value,
+                'Gotra': document.getElementById('form-gotra').value || 'NA',
+                'Puja': selectedRitual.name,
+                'Date': document.getElementById('form-date').value,
+                'Country': document.getElementById('form-country').value,
+                'WhatsApp': iti.getNumber(),
+                'Flexibility': document.getElementById('form-flex').checked ? 'Yes' : 'No',
+                'Notes': document.getElementById('form-notes').value || 'Standard'
+            };
 
-            } catch (err) {
-                console.error("Network Error:", err);
-                btn.innerText = "Network Issue - Try Again";
-                btn.disabled = false;
-                alert("Please check your internet connection and try again.");
+            // 3. Append inputs to the form
+            for (const key in fields) {
+                const input = document.createElement('input');
+                input.name = key;
+                input.value = fields[key];
+                hiddenForm.appendChild(input);
             }
+
+            // 4. Submit the form
+            document.body.appendChild(hiddenForm);
+            hiddenForm.submit(); 
+            
+            // Note: The browser will now leave this page and go to Google/Razorpay.
         };
     </script>
 </body>

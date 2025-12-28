@@ -201,6 +201,7 @@ function showForm() {
 
 document.getElementById('sankalp-form').onsubmit = function(e) {
     e.preventDefault();
+
     const btn = document.getElementById('submit-btn');
     btn.innerText = "Redirecting to Secure Payment...";
     btn.disabled = true;
@@ -211,19 +212,20 @@ document.getElementById('sankalp-form').onsubmit = function(e) {
     hiddenForm.style.display = 'none';
 
     const fields = {
-        Name: form-name.value,
-        Email: form-email.value,
-        Gotra: form-gotra.value || 'NA',
+        Name: document.getElementById('form-name').value,
+        Email: document.getElementById('form-email').value,
+        Gotra: document.getElementById('form-gotra').value || 'NA',
         Puja: selectedRitual.name,
         Date: document.getElementById('form-date').value,
-        Country: form-country.value,
+        Country: document.getElementById('form-country').value,
         WhatsApp: iti.getNumber(),
-        Flexibility: form-flex.checked ? 'Yes' : 'No',
-        Notes: form-notes.value || 'Standard'
+        Flexibility: document.getElementById('form-flex').checked ? 'Yes' : 'No',
+        Notes: document.getElementById('form-notes').value || 'Standard'
     };
 
     for (const key in fields) {
         const input = document.createElement('input');
+        input.type = 'hidden';
         input.name = key;
         input.value = fields[key];
         hiddenForm.appendChild(input);
@@ -232,6 +234,7 @@ document.getElementById('sankalp-form').onsubmit = function(e) {
     document.body.appendChild(hiddenForm);
     hiddenForm.submit();
 };
+
 </script>
 </body>
 </html>

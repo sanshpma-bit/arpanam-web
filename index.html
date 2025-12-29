@@ -116,6 +116,45 @@
             </button>
         </form>
     </div>
+        <!-- SUCCESS -->
+    <div id="success-view"
+         class="max-w-2xl mx-auto bg-white p-8 md:p-12 border border-[#E5D9C5] hidden text-center">
+
+        <h2 class="text-3xl font-bold text-[#1a7f37] mb-4">
+            Sankalp Accepted 🙏
+        </h2>
+
+        <p class="text-lg mb-6">
+            Your offering has been successfully received.
+        </p>
+
+        <div class="bg-[#FFF9F2] border border-[#E5D9C5] p-4 mb-6 rounded">
+            <p class="text-xs uppercase tracking-widest opacity-60 mb-2">
+                Booking ID
+            </p>
+            <p id="success-booking-id"
+               class="text-xl font-bold text-[#D45D12]">
+                ARP-XXXX
+            </p>
+        </div>
+
+        <p class="mb-6 text-sm opacity-80">
+            Our Acharya will contact you on WhatsApp shortly to confirm
+            the <b>Muhurat</b> and next steps.
+        </p>
+
+        <a id="success-whatsapp"
+           href="#"
+           target="_blank"
+           class="saffron-btn inline-block text-lg max-w-sm mx-auto">
+            Contact via WhatsApp
+        </a>
+
+        <p class="mt-6 text-xs opacity-60">
+            Please keep your Booking ID for reference.
+        </p>
+    </div>
+
 </main>
 
 <script>
@@ -140,6 +179,7 @@ window.addEventListener('DOMContentLoaded', () => {
         preferredCountries: ["in", "us", "ae", "gb"],
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
     });
+    handleSuccessRedirect();
     renderLobby();
 });
 
@@ -159,6 +199,34 @@ function renderLobby() {
 function selectRitual(id) {
     selectedRitual = rituals.find(r => r.id === id);
     showDetail();
+}
+
+function handleSuccessRedirect() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    const booking = params.get("booking");
+
+    if (status === "success" && booking) {
+        // Hide all other views
+        document.getElementById("lobby-view")?.classList.add("hidden");
+        document.getElementById("detail-view")?.classList.add("hidden");
+        document.getElementById("form-view")?.classList.add("hidden");
+
+        // Show success view
+        const successView = document.getElementById("success-view");
+        successView.classList.remove("hidden");
+
+        // Inject booking ID
+        document.getElementById("success-booking-id").innerText = booking;
+
+        // Prepare WhatsApp follow-up link (India default for now)
+        const msg = encodeURIComponent(
+            `Namaste Arpanam 🙏\nMy payment is complete.\nBooking ID: ${booking}`
+        );
+
+        document.getElementById("success-whatsapp").href =
+            `https://wa.me/91XXXXXXXXXX?text=${msg}`;
+    }
 }
 
 function showLobby() { renderLobby(); }

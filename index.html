@@ -179,8 +179,11 @@ window.addEventListener('DOMContentLoaded', () => {
         preferredCountries: ["in", "us", "ae", "gb"],
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
     });
-    handleSuccessRedirect();
-    renderLobby();
+
+    const isSuccess = handleSuccessRedirect();
+    if (!isSuccess) {
+        renderLobby();
+    }
 });
 
 function renderLobby() {
@@ -207,26 +210,26 @@ function handleSuccessRedirect() {
     const booking = params.get("booking");
 
     if (status === "success" && booking) {
-        // Hide all other views
         document.getElementById("lobby-view")?.classList.add("hidden");
         document.getElementById("detail-view")?.classList.add("hidden");
         document.getElementById("form-view")?.classList.add("hidden");
 
-        // Show success view
         const successView = document.getElementById("success-view");
         successView.classList.remove("hidden");
 
-        // Inject booking ID
         document.getElementById("success-booking-id").innerText = booking;
 
-        // Prepare WhatsApp follow-up link (India default for now)
         const msg = encodeURIComponent(
             `Namaste Arpanam 🙏\nMy payment is complete.\nBooking ID: ${booking}`
         );
 
         document.getElementById("success-whatsapp").href =
             `https://wa.me/91XXXXXXXXXX?text=${msg}`;
+
+        return true; // ✅ SUCCESS STATE DETECTED
     }
+
+    return false; // ❌ Normal flow
 }
 
 function showLobby() { renderLobby(); }
